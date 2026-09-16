@@ -9,6 +9,9 @@ Construido para un despacho real y operado en producción. Este repositorio es u
 versión de portafolio: mismo código, con los datos y credenciales del cliente
 retirados y sustituidos por un juego de datos de demostración.
 
+Verificado corriendo: login con JWT, tablero con gráficas, bandeja de
+clasificación y consulta de vigencia contra el web service del SAT.
+
 ---
 
 ## Qué resuelve
@@ -124,6 +127,14 @@ El seeder deja tres cuentas, todas con contraseña `demo1234`:
 Viene con un ejercicio fiscal abierto y CFDI de todo el año ya cargados. Los del
 mes en curso quedan **sin clasificar** a propósito, para que la bandeja de
 pendientes tenga con qué trabajar.
+
+Cada CFDI sembrado trae su XML 3.3 completo en la columna `file`, porque la
+pantalla de clasificación lo parsea para desplegar el detalle de conceptos.
+
+Un detalle esperado: al consultar la vigencia, el SAT responde **«N - 602:
+Comprobante no encontrado»** para estos comprobantes. Es correcto — los UUID de
+demostración no existen en el SAT. Lo que la respuesta demuestra es que la
+integración SOAP funciona de verdad contra el servicio real.
 
 ---
 

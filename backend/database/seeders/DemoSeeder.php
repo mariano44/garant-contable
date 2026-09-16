@@ -305,7 +305,9 @@ class DemoSeeder extends Seeder
                     'total' => round($subtotal * 1.16, 2),
                     'siniva' => $subtotal,
                     'estado' => 'Vigente', 'tipo' => 'Ingreso',
-                    'documento' => 'Factura', 'file' => null,
+                    'documento' => 'Factura',
+                    'file' => $this->xmlCfdi(self::RFC_DEMO, $razon, $rfcReceptor, $subtotal,
+                                             'Servicios profesionales'),
                     'cliente' => self::RFC_DEMO,
                     'filename' => 'ingreso_' . $periodo . '_' . ($i + 1) . '.xml',
                     // Los ingresos si van clasificados desde el arranque.
@@ -327,7 +329,8 @@ class DemoSeeder extends Seeder
                     'total' => round($subtotal * 1.16, 2),
                     'siniva' => $subtotal,
                     'estado' => 'Vigente', 'tipo' => 'Egreso',
-                    'documento' => 'Factura', 'file' => null,
+                    'documento' => 'Factura',
+                    'file' => $this->xmlCfdi($rfcEmisor, $razon, self::RFC_DEMO, $subtotal, $rubro),
                     'cliente' => self::RFC_DEMO,
                     'filename' => 'egreso_' . $periodo . '_' . ($i + 1) . '.xml',
                     // El mes en curso queda pendiente de clasificar.
@@ -347,7 +350,9 @@ class DemoSeeder extends Seeder
                 'fecha' => sprintf('%s-%s-28 09:00:00', $ejercicio, $periodo),
                 'total' => $nomina, 'siniva' => $nomina,
                 'estado' => 'Vigente', 'tipo' => 'Nómina',
-                'documento' => 'Nomina', 'file' => null,
+                'documento' => 'Nomina',
+                'file' => $this->xmlCfdi(self::RFC_DEMO, 'EMPRESA DEMOSTRACION SA DE CV',
+                                         self::RFC_DEMO, $nomina, 'Sueldos y salarios'),
                 'cliente' => self::RFC_DEMO,
                 'filename' => 'nomina_' . $periodo . '.xml',
                 'rubros' => 'Sueldos y salarios',
@@ -360,6 +365,71 @@ class DemoSeeder extends Seeder
         }
 
         $this->command->info('CFDIs de demostracion insertados: ' . count($filas));
+    }
+
+    /**
+     * XML de CFDI 3.3 minimo pero estructuralmente valido.
+     *
+     * La pantalla de Clasificar parsea esta columna con xml2js y lee
+     * cfdi:Comprobante > cfdi:Conceptos > cfdi:Concepto para desplegar el
+     * detalle de cada comprobante. Si viene vacia, la vista se queda girando.
+     *
+     * No lleva Sello ni Certificado: es un comprobante de muestra, no uno
+     * timbrado.
+     */
+    private function xmlCfdi($rfcEmisor, $nombreEmisor, $rfcReceptor, $subtotal, $descripcion)
+    {
+        // Dos conceptos para que la tabla de detalle tenga mas de un renglon.
+        $primero = round($subtotal * 0.65, 2);
+        $segundo = round($subtotal - $primero, 2);
+        $renglones = [
+            [$descripcion, $primero, 1],
+            ['Cargos complementarios', $segundo, 1],
+        ];
+
+        $conceptos = '';
+        foreach ($renglones as $i => list($desc, $importe, $cantidad)) {
+            $conceptos .= sprintf(
+                '<cfdi:Concepto ClaveProdServ="%s" NoIdentificacion="ART-%03d" ' .
+                'Cantidad="%s" ClaveUnidad="E48" Unidad="NO APLICA" ' .
+                'Descripcion="%s" ValorUnitario="%s" Importe="%s" Descuento="0.00">' .
+                '<cfdi:Impuestos><cfdi:Traslados>' .
+                '<cfdi:Traslado Base="%s" Impuesto="002" TipoFactor="Tasa" ' .
+                'TasaOCuota="0.160000" Importe="%s"/>' .
+                '</cfdi:Traslados></cfdi:Impuestos></cfdi:Concepto>',
+                $i === 0 ? '84111506' : '80101500',
+                $i + 1,
+                number_format($cantidad, 2, '.', ''),
+                htmlspecialchars($desc, ENT_QUOTES),
+                number_format($importe / $cantidad, 2, '.', ''),
+                number_format($importe, 2, '.', ''),
+                number_format($importe, 2, '.', ''),
+                number_format($importe * 0.16, 2, '.', '')
+            );
+        }
+
+        $iva = round($subtotal * 0.16, 2);
+
+        return '<?xml version="1.0" encoding="UTF-8"?>'
+            . '<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/3" '
+            . 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+            . 'Version="3.3" Serie="A" Folio="1" '
+            . 'SubTotal="' . number_format($subtotal, 2, '.', '') . '" '
+            . 'Moneda="MXN" '
+            . 'Total="' . number_format($subtotal + $iva, 2, '.', '') . '" '
+            . 'TipoDeComprobante="I" FormaPago="03" MetodoPago="PUE" '
+            . 'LugarExpedicion="82000">'
+            . '<cfdi:Emisor Rfc="' . $rfcEmisor . '" '
+            . 'Nombre="' . htmlspecialchars($nombreEmisor, ENT_QUOTES) . '" '
+            . 'RegimenFiscal="601"/>'
+            . '<cfdi:Receptor Rfc="' . $rfcReceptor . '" Nombre="EMPRESA DEMOSTRACION SA DE CV" '
+            . 'UsoCFDI="G03"/>'
+            . '<cfdi:Conceptos>' . $conceptos . '</cfdi:Conceptos>'
+            . '<cfdi:Impuestos TotalImpuestosTrasladados="' . number_format($iva, 2, '.', '') . '">'
+            . '<cfdi:Traslados><cfdi:Traslado Impuesto="002" TipoFactor="Tasa" '
+            . 'TasaOCuota="0.160000" Importe="' . number_format($iva, 2, '.', '') . '"/>'
+            . '</cfdi:Traslados></cfdi:Impuestos>'
+            . '</cfdi:Comprobante>';
     }
 
     /** UUID con formato valido pero obviamente falso. */
