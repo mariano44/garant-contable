@@ -1,9 +1,11 @@
 # Garant Contable
 
-Plataforma web de contabilidad y facturación electrónica para despachos contables
-mexicanos. Un despacho da de alta a sus clientes, carga los CFDI de cada periodo
-fiscal, los clasifica por rubro contable, verifica su vigencia contra el SAT y
-emite facturas timbradas.
+Plataforma mexicana en línea de contabilidad y cumplimiento fiscal para pequeñas
+empresas y personas físicas.
+
+El despacho da de alta a sus clientes, carga los CFDI de cada periodo fiscal, los
+clasifica por rubro contable, verifica su vigencia contra el SAT y emite facturas
+timbradas.
 
 Construido para un despacho real y operado en producción. Este repositorio es una
 versión de portafolio: mismo código, con los datos y credenciales del cliente
