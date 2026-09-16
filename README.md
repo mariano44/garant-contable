@@ -16,6 +16,36 @@ clasificación y consulta de vigencia contra el web service del SAT.
 
 ---
 
+## Pantallas
+
+Capturas del sistema corriendo en local, con los datos de demostración.
+
+**Acceso.** Una sola pantalla para los dos tipos de usuario; el backend decide
+qué menú se arma según el rol o el plan.
+
+![Pantalla de acceso](docs/capturas/01-login.png)
+
+**Tablero.** Ingresos contra egresos por mes y la línea de neto, más el
+desglose de gastos por rubro contable. Todo sale de los CFDI cargados.
+
+![Tablero informativo](docs/capturas/02-tablero.png)
+
+**Carga de CFDI.** Se arrastran los XML del periodo; el sistema los parsea,
+descarta los repetidos por UUID y los deja listos para clasificar.
+
+![Carga de CFDI](docs/capturas/03-subir-cfdis.png)
+
+**Emisión de factura.** Conceptos con su clave del SAT, impuestos por renglón
+y totales. Al emitir, el XML se sella con el CSD y se manda al PAC.
+
+![Nueva factura](docs/capturas/04-nueva-factura.png)
+
+**Perfil.** Datos fiscales del contribuyente y el rol con el que entró.
+
+![Perfil de usuario](docs/capturas/05-perfil.png)
+
+---
+
 ## Qué resuelve
 
 Un contador que lleva varias empresas recibe cada mes cientos de archivos XML del
