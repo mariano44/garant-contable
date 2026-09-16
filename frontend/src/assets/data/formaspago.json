@@ -1,0 +1,25 @@
+[
+    {
+        "01": "01 - Efectivo",
+        "02": "02 - Cheque Nominativo",
+        "03": "03 - Transferencia Electronica de Fondos",
+        "04": "04 - Tarjeta de Credito",
+        "05": "05 - Monedero Electronico",
+        "06": "06 - Dinero Electronico",
+        "08": "08 - Vales de despensa",
+        "12": "12 - Dación de pago",
+        "13": "13 - Pago por subrogación",
+        "14": "14 - Pago por consignación",
+        "15": "15 - Condonación",
+        "17": "17 - Compensación",
+        "23": "23 - Novación",
+        "24": "24 - Confusión",
+        "25": "25 - Remisión de Deuda",
+        "26": "26 - Prescripción o caducidad",
+        "27": "27 - A satisfacion de acreedor",
+        "28": "28 - Tarjeta de Débito",
+        "29": "29 - Tarjeta de Servicios",
+        "30": "30 - Aplicación de Anticipos",
+        "99": "99 - Otros"
+    }
+]

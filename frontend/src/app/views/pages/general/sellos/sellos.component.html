@@ -1,0 +1,203 @@
+<div class="profile-page tx-13">
+    <div class="row">
+      <div class="col-12 grid-margin">
+        <div class="profile-header">
+          <div class="cover">
+            <div class="gray-shade"></div>
+            <figure>
+              <img src="../../../../../assets/images/{{cover}}.jpg" class="img-fluid" alt="profile cover">
+            </figure>
+            <div class="cover-body d-flex justify-content-between align-items-center">
+              <div>
+                <img class="profile-pic" src="{{fotoperfil}}" alt="profile">
+                <span class="profile-name">{{nombres}} {{apellidos}}</span>
+              </div>
+              <!-- <div class="d-none d-md-block">
+                <button class="btn btn-primary btn-icon-text btn-edit-profile" (click)="Editar()">
+                  <i data-feather="edit" appFeatherIcon class="btn-icon-prepend"></i> Editar Archivos
+                </button>
+              </div> -->
+            </div>
+          </div>
+          <div class="header-links">
+            <ul class="links d-flex align-items-center mt-3 mt-md-0">
+              <li class="header-link-item d-flex align-items-center">
+                <i class="mr-1 icon-md" data-feather="columns" appFeatherIcon></i>
+                <a class="pt-1px d-none d-md-block" routerLink="/general/perfil/{{iduser}}">Generales</a>
+              </li>
+              <li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center active">
+                <i class="mr-1 icon-md" data-feather="user" appFeatherIcon></i>
+                <a class="pt-1px d-none d-md-block" routerLink="/general/sellos/{{iduser}}">Sellos</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row profile-body">
+      <!-- left wrapper start -->
+      <div class="d-none d-md-block col-md-4 col-xl-3 left-wrapper">
+        <div class="card rounded">
+          <div class="card-body">                          
+            <div class="mt-3">
+              <label class="tx-11 font-weight-bold mb-0 text-uppercase">Registro desde:</label>
+              <p class="text-muted">{{registro}}</p>
+            </div>
+            <div class="mt-3">
+              <label class="tx-11 font-weight-bold mb-0 text-uppercase">Mi Plan:</label>
+              <p class="text-muted">{{plan}}</p>
+            </div>
+            <div class="mt-3">
+              <label class="tx-11 font-weight-bold mb-0 text-uppercase">Usuario:</label>
+              <p class="text-muted">{{correo}}</p>
+            </div> 
+            <!-- <div class="mt-3" *ngIf="tieneRFC">
+              <label class="tx-11 font-weight-bold mb-0 text-uppercase"></label>
+            </div>          -->
+          </div>
+        </div>
+      </div>
+      <!-- left wrapper end -->
+      <!-- middle wrapper start -->
+      <div class="col-md-8 col-xl-8 middle-wrapper" *blockUI="'block-item'">
+        <div class="row">
+          <div class="col-md-12 stretch-card">
+            <div class="card">
+              <div class="card-header">
+                <span class="float-right">
+                  <button class="btn btn-secondary" *ngIf="editciec" (click)="editarciec()" type="button"><i class="mr-1 icon-md" data-feather="edit-2" appFeatherIcon></i></button>
+                  <button class="btn btn-success" *ngIf="saveciec" (click)="GuardarC()" type="button"><i class="mr-1 icon-md" data-feather="save" appFeatherIcon></i></button>
+                  <button class="btn btn-danger" *ngIf="saveciec" (click)="CancelarC()" type="button"><i class="mr-1 icon-md" data-feather="x" appFeatherIcon></i></button>
+                </span>
+              </div>
+              <div class="card-body">
+                <h6 class="card-title">CIEC</h6>
+                  <form>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group">                          
+                          <label class="control-label">Contraseña CIEC</label>
+                          <input type="password" [readonly]="rOnly" class="form-control" [(ngModel)]="passciec" [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                    </div>                    
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 stretch-card">
+            <div class="card">
+              <div class="card-header">
+                <span class="float-right">
+                  <button class="btn btn-secondary" *ngIf="editfiel" (click)="editarfiel()" type="button"><i class="mr-1 icon-md" data-feather="edit-2" appFeatherIcon></i></button>
+                  <button class="btn btn-success" *ngIf="savefiel" (click)="GuardarF()" type="button"><i class="mr-1 icon-md" data-feather="save" appFeatherIcon></i></button>
+                  <button class="btn btn-danger" *ngIf="savefiel" (click)="CancelarF()" type="button"><i class="mr-1 icon-md" data-feather="x" appFeatherIcon></i></button>
+                </span> 
+              </div>              
+              <div class="card-body">
+                <h6 class="card-title">FIEL</h6>                                 
+                  <form>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <label class="control-label">Contraseña FIEL</label>
+                          <input type="password" [readonly]="rOnlyF" class="form-control" [(ngModel)]="passfiel" [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <label class="control-label">Archivo Extensión .key</label>
+                          <input (change)="handleFileInputFK($event)" accept=".key" type="file" name="imgFK" class="file-upload-default" id="fileUploadInputExampleFK">
+                          <div class="input-group col-xs-4" (click)="openFileBrowserFK($event)">
+                            <input type="text" class="form-control file-upload-info" disabled="">
+                            <span class="input-group-append">
+                              <button class="file-upload-browse btn btn-primary" type="button" [disabled]="rOnlyF"><i class="mr-1 icon-md" data-feather="upload" appFeatherIcon></i></button>
+                            </span>
+                          </div>
+                          <div *ngIf="isDownloadbleFK">
+                            <button ngbTooltip="Descargar .KEY de la FIEL" class="btn btn-primary btn-block" type="button" (click)="downloadFile('fielkey','FIELKEY.zip')"><div class="icon"><i class="feather icon-download"></i></div></button>
+                          </div>
+                        </div>
+                      </div><!-- Col -->
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <label class="control-label">Archivo Extensión .cer</label>
+                          <input (change)="handleFileInputFC($event)" accept=".cer" type="file" name="imgFC" class="file-upload-default" id="fileUploadInputExampleFC">
+                          <div class="input-group col-xs-4" (click)="openFileBrowserFC($event)">
+                            <input type="text" class="form-control file-upload-info" disabled="">
+                            <span class="input-group-append">
+                              <button class="file-upload-browse btn btn-primary" type="button" [disabled]="rOnlyF"><i class="mr-1 icon-md" data-feather="upload" appFeatherIcon></i></button>
+                            </span>
+                          </div>
+                        </div>
+                        <div *ngIf="isDownloadbleFC">
+                          <button ngbTooltip="Descargar .CER de la FIEL" class="btn btn-primary btn-block" type="button" (click)="downloadFile('fielkey','FIELCER.zip')"><div class="icon"><i class="feather icon-download"></i></div></button>
+                        </div>
+                      </div><!-- Col -->
+                    </div>                    
+                  </form>  
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 stretch-card">
+            <div class="card">
+              <div class="card-header">
+                <span class="float-right">
+                  <button class="btn btn-secondary" *ngIf="editcsd" (click)="editarcsd()" type="button"><i class="mr-1 icon-md" data-feather="edit-2" appFeatherIcon></i></button>
+                  <button class="btn btn-success" *ngIf="savecsd" (click)="GuardarCSD()" type="button"><i class="mr-1 icon-md" data-feather="save" appFeatherIcon></i></button>
+                  <button class="btn btn-danger" *ngIf="savecsd" (click)="CancelarCSD()" type="button"><i class="mr-1 icon-md" data-feather="x" appFeatherIcon></i></button>
+                </span> 
+              </div> 
+              <div class="card-body">
+                <h6 class="card-title">CSD</h6>
+                  <form>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <label class="control-label">Contraseña CSD</label>                          
+                          <input type="password" [readonly]="rOnlyCSD" class="form-control" [(ngModel)]="passcsd" [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <label class="control-label">Archivo Extensión .key</label>
+                          <input (change)="handleFileInputCSDK($event)" accept=".key" type="file" name="imgCSDK" class="file-upload-default" id="fileUploadInputExampleCSDK">
+                          <div class="input-group col-xs-4" (click)="openFileBrowserCSDK($event)">
+                            <input type="text" class="form-control file-upload-info" disabled="">
+                            <span class="input-group-append">
+                              <button class="file-upload-browse btn btn-primary" type="button" [disabled]="rOnlyCSD"><i class="mr-1 icon-md" data-feather="upload" appFeatherIcon></i></button>
+                            </span>
+                          </div>
+                        </div>
+                        <div *ngIf="isDownloadbleCK">
+                          <button ngbTooltip="Descargar .KEY del CSD" class="btn btn-primary btn-block" type="button" (click)="downloadFile('csdkey','CSDKEY.zip')"><div class="icon"><i class="feather icon-download"></i></div></button>
+                        </div>
+                      </div><!-- Col -->
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <label class="control-label">Archivo Extensión .cer</label>
+                          <input (change)="handleFileInputCSDC($event)" accept=".cer" type="file" name="imgCSDC" class="file-upload-default" id="fileUploadInputExampleCSDC">
+                          <div class="input-group col-xs-4" (click)="openFileBrowserCSDC($event)">
+                            <input type="text" class="form-control file-upload-info" disabled="">
+                            <span class="input-group-append">
+                              <button class="file-upload-browse btn btn-primary" type="button" [disabled]="rOnlyCSD"><i class="mr-1 icon-md" data-feather="upload" appFeatherIcon></i></button>
+                            </span>
+                          </div>
+                        </div>
+                        <div *ngIf="isDownloadbleCC">
+                          <button ngbTooltip="Descargar .CER del CSD" class="btn btn-primary btn-block" type="button" (click)="downloadFile('csdcer','CSDCER.zip')"><div class="icon"><i class="feather icon-download"></i></div></button>
+                        </div>
+                      </div><!-- Col -->
+                    </div>                    
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>     
+    </div>
+  </div>

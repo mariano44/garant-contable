@@ -1,0 +1,478 @@
+<div class="row">
+  <div class="col-xl-10 main-content pl-xl-4 pr-xl-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Documentos</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<!-- <div class="row" *ngIf="!activado">
+  {{mensaje}}: <a href="{{mensaje2}}" > pagos@garantcontable.com</a>
+</div> -->
+<div class="profile-page tx-13" *blockUI="'listablock'">
+  <div class="header-links">
+    <ul ngbNav #defaultNav="ngbNav" [(activeId)]="defaultNavActiveId" class="nav-tabs links d-flex align-items-center mt-3 mt-md-0">
+      <li [ngbNavItem]="1" class="header-link-item d-flex align-items-center active" *ngIf="activado">
+        <a ngbNavLink class="pt-1px d-none d-md-block">Subir Documento</a>
+        <ng-template ngbNavContent>
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card" >
+              <div class="card">
+                <div class="card-header">                  
+                  <h6 class="card-title">Subir Documentos</h6>
+                </div>
+                <div class="card-body" *blockUI="'docublock'">
+                  <p class="card-title text-muted">Sube tus documentos en este apartado</p>
+                  <div class="form-group" *ngIf="!quienve">
+                    <input (change)="handleFileInputFC($event)" type="file" name="imgFC" class="file-upload-default" id="fileUploadInputExampleFC" placeholder="Subir documentos">
+                    <div class="input-group col-xs-4" (click)="openFileBrowserFC($event)">
+                      <input type="text" class="form-control file-upload-info" style="height: 60px;" disabled="" placeholder="Da click aquí para subir tus documentos">
+                      <!-- <span class="input-group-append">
+                        <button class="file-upload-browse btn btn-primary" type="button" ><i class="mr-1 icon-md" data-feather="upload" appFeatherIcon></i></button>
+                      </span> -->
+                    </div>
+                  </div>
+                  <div class="form-group" *ngIf="quienve">
+                    <input (change)="handleFileInputD($event)" type="file" name="imgFC" class="file-upload-default" id="fileUploadInputExampleD" placeholder="Subir documentos">
+                    <div class="input-group col-xs-4" (click)="openFileBrowserD($event)">
+                      <input type="text" class="form-control file-upload-info" style="height: 60px;" disabled="" placeholder="Da click aquí para subir tus documentos">
+                      <!-- <span class="input-group-append">
+                        <button class="file-upload-browse btn btn-primary" type="button" ><i class="mr-1 icon-md" data-feather="upload" appFeatherIcon></i></button>
+                      </span> -->
+                    </div>
+                  </div>
+                  <p class="card-title text-muted">Categoría de documentos</p>
+                  <div class="row">
+                    <div class="form-group col-md-6" >
+                      <div class="form-group row col-md-12">
+                        <ng-select 
+                          [items]="categorias"
+                          bindLabel="label"
+                          bindValue="label"
+                          placeholder="Seleccionar categoría"
+                          [(ngModel)]="selectedcat"
+                          [ngModelOptions]="{standalone: true}"
+                          (change)="changecategorias()"
+                          style="width: 100%;">
+                        </ng-select> 
+                      </div>
+                      <div class="form-group row" >
+                        <div class="col text-center">
+                          <button type="button" *ngIf="!quienve" class="btn btn-primary" style="width: 300px !important;height: 50px;" (click)="GuardarArchivo()">Subir Documento</button>
+                          <button type="button" *ngIf="quienve" class="btn btn-warning" style="width: 300px !important;height: 50px;" (click)="GuardarDeclaracion()">Subir Documento</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-6" >
+                      <div *ngIf="estadodecuenta">
+                        <p>Favor de seleccionar el ejercicio y el periodo del estado de cuenta.</p>                        
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Ejercicio: </label>
+                          <div class="col-sm-9">
+                            <ng-select 
+                              [items]="ejercicios"
+                              notFoundText="No hay ejercicios registrados"
+                              bindLabel="anio"
+                              bindValue="anio"
+                              placeholder="Seleccionar ejercicio"
+                              [(ngModel)]="selectedejercicio"
+                              (change)="HabilitarGuardar()">
+                            </ng-select>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Periodo: </label>
+                          <div class="col-sm-9">
+                            <ng-select 
+                              [items]="periodos"
+                              notFoundText="No hay periodos registrados"
+                              bindLabel="mes"
+                              bindValue="periodo"
+                              placeholder="Seleccionar Periodo"
+                              [(ngModel)]="selectedperiodo"
+                              (change)="HabilitarGuardar()">
+                            </ng-select>
+                          </div>
+                        </div>
+                      </div>
+                      <div *ngIf="vinculados">
+                        <div>
+                          <p>Documentos que puedes subir relacionados a Vinculados de Nómina</p>
+                          <ul>
+                            <li>Altas</li>
+                            <li>Bajas</li>
+                            <li>Modificaciones de salarios</li>
+                            <li>Incapacidades</li>
+                            <li>Ausentismos</li>
+                            <li>Permisos</li>
+                            <li>Vacaciones</li>
+                            <li>Finiquitos</li>
+                            <li>Solicitudes</li>
+                            <li>Registro estatal de contribuyentes (RUC)</li>
+                            <li>Contraseña RUC</li>
+                            <li>Liquidaciones IMSS</li>
+                            <li>Otros documentos relacionados a Nómina</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div *ngIf="docsfiscales">
+                        <p>Ejemplos de documentos fiscales</p>
+                          <ul>
+                            <li>Constancia de retención</li>
+                            <li>Pedimentos importación</li>
+                            <li>Pedimentos exportación</li>
+                            <li>Facturas del extranjero</li>
+                          </ul>
+                      </div>
+                      <div *ngIf="otros">                      
+                        <p>Si no encuentras la categoría del documento que vas a subir, puedes utilizar esta categoría.</p>
+                      </div>
+                      <div *ngIf="lineadecaptura">      
+                        <p>Favor de seleccionar la propuesta aceptada.</p>                
+                        <div class="table-responsive">
+                          <ngx-datatable
+                          #tablerelacionados
+                          class="bootstrap"
+                          [rows]="Relacionados"
+                          [loadingIndicator]="loadingIndicator"
+                          [columnMode]="ColumnMode.force"
+                          [headerHeight]="50"
+                          [footerHeight]="50"
+                          [rowHeight]="50"
+                          [limit]="20"
+                          [scrollbarH]="true"
+                          [columns]="columnsR"
+                          [selected]="selecteddec"
+                          [selectionType]="SelectionType.single"
+                          [selectCheck]="singleSelectCheck"
+                          >
+                            <ngx-datatable-column name="ID" [width]="10" prop="id"></ngx-datatable-column>
+                            <ngx-datatable-column name="Nombre" [width]="100" prop="nombre"></ngx-datatable-column>
+                          </ngx-datatable>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="2" class="header-link-item d-flex align-items-center">
+        <a ngbNavLink class="pt-1px d-none d-md-block">Documentos</a>
+        <ng-template ngbNavContent>
+          <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 grid-margin stretch-card" >
+              <div class="card">
+                <div class="card-body">
+                  <div class="row d-flex justify-content-lg-center">
+                    <div class="form-group">
+                      <ng-select 
+                        [items]="catsearchdoc"
+                        bindLabel="label"
+                        bindValue="label"
+                        placeholder="Buscar por categoría"
+                        [(ngModel)]="buscarporcatdoc"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="buscarporcategoriadocumentos()">
+                      </ng-select> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 grid-margin stretch-card" >
+              <div class="card">
+                <div class="card-body">
+                  <div class="row d-flex justify-content-lg-center">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">
+                          <i class="feather icon-search"></i>
+                        </div>
+                      </div>
+                      <input type="text" class="form-control" placeholder="Buscar por nombre" (keyup)="BuscarPorNombre($event,'doc')"> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row col-md-12 grid-margin stretch-card" >
+            <div class="table-responsive">
+              <ngx-datatable
+                #table
+                class="bootstrap"
+                [rows]="Documentos"
+                [loadingIndicator]="loadingIndicator"
+                [columnMode]="ColumnMode.force"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="50"
+                [limit]="20"
+                [scrollbarH]="true"
+                [columns]="columns"
+                [selected]="selected"
+                [selectionType]="SelectionType.single"
+              >
+                <ngx-datatable-column name="Nombre" [width]="100" prop="nombre">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <span title="Ejercicio: {{row.ejercicio}} Periodo: {{row.periodo}}">
+                      {{row.nombre}}
+                    </span>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Categoría" [width]="50" prop="categoria">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <span title="Ejercicio: {{row.ejercicio}} Periodo: {{row.periodo}}">
+                      {{row.categoria}}
+                    </span>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Fecha" [width]="50" prop="subido">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <span title="Ejercicio: {{row.ejercicio}} Periodo: {{row.periodo}}">
+                      {{row.subido}}
+                    </span>
+                  </ng-template>
+                </ngx-datatable-column> 
+                <ngx-datatable-column name="Documento" [width]="200" >
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
+                    <div *blockUI="'descargarblock'">
+                      <button class="btn btn-success btn-icon-text" (click)="downloadFile(row.nombre)">                        
+                        <i class="feather icon-download btn-icon-prepend"></i>
+                        Descargar
+                      </button>
+                      <button class="btn btn-danger btn-icon-text" *ngIf="row.puedequitar" (click)="deleteFile(row.nombre,row.id, rowIndex,'doc')">                        
+                        <i class="feather icon-x btn-icon-prepend"></i>
+                        Quitar
+                      </button>
+                    </div>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+            </div>
+          </div>
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="3" class="header-link-item d-flex align-items-center">
+        <a ngbNavLink class="pt-1px d-none d-md-block" >Declaraciones</a>
+        <ng-template ngbNavContent>
+          <div class="row profile-body">
+            <div class="col-md-12 col-xl-12 middle-wrapper">
+              <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 grid-margin stretch-card" >
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="row d-flex justify-content-lg-center">
+                        <div class="form-group">
+                          <ng-select 
+                            [items]="catsearchdec"
+                            bindLabel="label"
+                            bindValue="label"
+                            placeholder="Buscar por categoría"
+                            [(ngModel)]="buscarporcatdec"
+                            [ngModelOptions]="{standalone: true}"
+                            (change)="buscarporcategoriadeclaraciones()">
+                          </ng-select> 
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 grid-margin stretch-card" >
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="row d-flex justify-content-lg-center">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">
+                              <i class="feather icon-search"></i>
+                            </div>
+                          </div>
+                          <input type="text" class="form-control" placeholder="Buscar por nombre" (keyup)="BuscarPorNombre($event,'dec')"> 
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 grid-margin">
+                  <div class="card rounded">
+                    <div class="card-body">
+                      <div class="table-responsive">
+                        <div class="row col-md-12 grid-margin stretch-card" >
+                          <div class="table-responsive">
+                            <ngx-datatable
+                            #tableD
+                            class="bootstrap"
+                            [rows]="Declaraciones"
+                            [loadingIndicator]="loadingIndicator"
+                            [columnMode]="ColumnMode.force"
+                            [headerHeight]="50"
+                            [footerHeight]="50"
+                            [rowHeight]="'auto'"
+                            [limit]="20"
+                            [scrollbarH]="true"
+                            [columns]="columnsD"
+                            >
+                              <ngx-datatable-column name="Nombre" [width]="100" cellClass="text-break" prop="nombre"></ngx-datatable-column>
+                              <ngx-datatable-column name="Categoría" [width]="100" cellClass="text-break" prop="categoria"></ngx-datatable-column>
+                              <ngx-datatable-column name="Fecha" [width]="30" prop="subido"></ngx-datatable-column> 
+                              <ngx-datatable-column name="Estado" [width]="80" cellClass="text-break">
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                  <div *ngIf="row.eslinea">
+                                    <div class="form-check form-check-inline" *ngIf="row.aceptable">
+                                      <label class="form-check-label" >
+                                        <input type="checkbox" [checked]="row.aceptada" [(ngModel)]="row.aceptada"
+                                        [ngModelOptions]="{standalone: true}" class="form-check-input" (click)="AceptarDeclaracion($event,row)">
+                                        <i class="input-frame"></i>
+                                        {{row.text}}
+                                      </label>
+                                    </div>
+                                    <div *ngIf="!row.aceptable">
+                                      <div *ngIf="row.eslinea">
+                                        <label class="form-check-label" *ngIf="!row.aceptada">                                      
+                                          <i class="feather icon-alert-triangle"></i> El cliente no ha aceptado la propuesta.
+                                        </label>
+                                        <label class="form-check-label" *ngIf="row.aceptada">                                      
+                                          <i class="feather icon-check"></i> Propuesta aceptada.
+                                        </label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </ng-template>
+                              </ngx-datatable-column> 
+                              <ngx-datatable-column name="Documento" [width]="200" >
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
+                                  <div *blockUI="'descargarblock'">
+                                    <button class="btn btn-success btn-icon-text" (click)="downloadFile(row.nombre)">                        
+                                      <i class="feather icon-download btn-icon-prepend"></i>
+                                      Descargar
+                                    </button>
+                                    <button class="btn btn-danger btn-icon-text" *ngIf="row.puedequitar" (click)="deleteFile(row.nombre,row.id,rowIndex,'dec')">
+                                      <i class="feather icon-x btn-icon-prepend"></i>
+                                      Quitar
+                                    </button>
+                                  </div>
+                                </ng-template>
+                              </ngx-datatable-column>   
+                            </ngx-datatable>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </li>
+    </ul>    
+    <div [ngbNavOutlet]="defaultNav" class="mt-3"></div>
+</div>  
+
+<ng-template #subirArchivo let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Subir Archivo</h5>
+    <button type="button" class="close" (click)="modal.close('by: close icon')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *blockUI="'contramodal'">
+    <div class="row">
+      <div class="col-md-12 stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <form>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <input (change)="handleFileInputFC($event)" type="file" name="imgFC" class="file-upload-default" id="fileUploadInputExampleFC">
+                    <div class="input-group col-xs-4" (click)="openFileBrowserFC($event)">
+                      <input type="text" class="form-control file-upload-info" disabled="">
+                      <span class="input-group-append">
+                        <button class="file-upload-browse btn btn-primary" type="button" ><i class="mr-1 icon-md" data-feather="upload" appFeatherIcon></i></button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">                
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <ng-select 
+                      [items]="categorias"
+                      bindLabel="label"
+                      bindValue="label"
+                      placeholder="Seleccionar categoría"
+                      [(ngModel)]="selectedcat"
+                      [ngModelOptions]="{standalone: true}">
+                  </ng-select> 
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer" *blockUI="'periodoblock'">
+    <button type="button" class="btn btn-primary" style="width: 300px !important;height: 50px;" (click)="GuardarArchivo()">Guardar</button>
+    <button type="button" class="btn btn-secondary" style="width: 300px !important;height: 50px;" (click)="modal.close('by: close button')">Cancelar</button>    
+  </div>
+</ng-template>
+
+<ng-template #subirDeclaracion let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Subir Declaración</h5>
+    <button type="button" class="close" (click)="modal.close('by: close icon')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *blockUI="'contramodal'">
+    <div class="row">
+      <div class="col-md-12 stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <form>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <input (change)="handleFileInputD($event)" type="file" name="imgFC" class="file-upload-default" id="fileUploadInputExampleD">
+                    <div class="input-group col-xs-4" (click)="openFileBrowserD($event)">
+                      <input type="text" class="form-control file-upload-info" disabled="">
+                      <span class="input-group-append">
+                        <button class="file-upload-browse btn btn-primary" type="button" ><i class="mr-1 icon-md" data-feather="upload" appFeatherIcon></i></button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">                
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <textarea class="form-control" placeholder="Comentario" [(ngModel)]="comentario"
+                    [ngModelOptions]="{standalone: true}"> 
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer" *blockUI="'periodoblock'">
+    <button type="button" class="btn btn-primary" (click)="GuardarDeclaracion()">Guardar</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.close('by: close button')">Cancelar</button>    
+  </div>
+</ng-template>

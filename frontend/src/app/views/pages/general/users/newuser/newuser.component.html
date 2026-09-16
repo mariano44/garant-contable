@@ -1,0 +1,68 @@
+<div class="row">
+  <div class="col-xl-10 main-content pl-xl-4 pr-xl-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/general/users">Usuario</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nuevo Usuario</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<div class="row">   
+  <div class="col-md-8 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title">Agregar nuevo usuario interno</h6>
+        <form class="forms-sample" >
+          <div class="form-group row">
+            <label for="exampleInputEmail2" class="col-sm-3 col-form-label">Correo</label>
+            <div class="col-sm-9">
+                <input type="email" email [(ngModel)]="correo" [ngModelOptions]="{standalone: true}" class="form-control {{vemail}}" id="exampleInputEmail2" autocomplete="off" placeholder="Correo Electrónico">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="nombre" class="col-sm-3 col-form-label">Nombres</label>
+            <div class="col-sm-9">
+              <input type="email" [(ngModel)]="nombres" [ngModelOptions]="{standalone: true}" class="form-control {{vnombres}}" id="nombre" autocomplete="off" placeholder="Nombres">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="apellidos" class="col-sm-3 col-form-label">Apellidos</label>
+            <div class="col-sm-9">
+              <input type="email" [(ngModel)]="apellidos" [ngModelOptions]="{standalone: true}" class="form-control {{vapellidos}}" id="apellidos" autocomplete="off" placeholder="Apellidos">
+            </div>
+          </div>                    
+          <div class="form-group row">
+            <label for="exampleInputPassword2" class="col-sm-3 col-form-label">Contraseña</label>
+            <div class="col-sm-9">
+              <input type="password" [(ngModel)]="contrasenia" [ngModelOptions]="{standalone: true}" class="form-control {{vpassword}}" id="exampleInputPassword2" autocomplete="off" placeholder="Contraseña">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="confirmar" class="col-sm-3 col-form-label">Confirmar Contraseña</label>
+            <div class="col-sm-9">
+              <input type="password" [(ngModel)]="confirmarcontrasenia" [ngModelOptions]="{standalone: true}" class="form-control {{vcpassword}}" id="confirmar" autocomplete="off" placeholder="Confirmar Contraseña">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="exampleInputMobile" class="col-sm-3 col-form-label">Teléfono</label>
+            <div class="col-sm-9">
+              <input type="text" mask="(000) 000 00 00" [showMaskTyped] = "true"  [(ngModel)]="telefono" [ngModelOptions]="{standalone: true}" class="form-control" id="exampleInputMobile" placeholder="Número Telefónico">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="rol" class="col-sm-3 col-form-label">Rol</label>
+            <div class="col-sm-9">
+              <select class="form-control {{vrol}}" id="rol" [(ngModel)]="rol" [ngModelOptions]="{standalone: true}">
+                <option value="">Seleccionar un rol</option>
+                <option *ngFor="let rol of roles" value={{rol.id}}>{{rol.rol}}</option>
+              </select>
+            </div>
+          </div>          
+          <button type="submit" class="btn btn-primary mr-2" (click)="Guardar()">Enviar</button>
+          <button class="btn btn-light" routerLink="/general/users">Cancelar</button>
+       </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<section class="highlight">
+  <ngb-tabset [destroyOnHide]="false">
+    <ngb-tab title="HTML" *ngIf="codeContent.htmlCode">
+      <ng-template ngbTabContent>
+        <pre><code [highlight]="codeContent.htmlCode"></code></pre>
+        <button class="btn btn-clipboard" ngxClipboard title="Copy example code" [cbContent]="codeContent.htmlCode"><i class="feather icon-copy link-icon"></i></button>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab title="TS" *ngIf="codeContent.tsCode">
+      <ng-template ngbTabContent>
+        <pre><code [highlight]="codeContent.tsCode"></code></pre>
+        <button class="btn btn-clipboard" ngxClipboard title="Copy example code" [cbContent]="codeContent.tsCode"><i class="feather icon-copy link-icon"></i></button>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab title="SCSS" *ngIf="codeContent.scssCode">
+      <ng-template ngbTabContent>
+        <pre><code [highlight]="codeContent.scssCode"></code></pre>
+        <button class="btn btn-clipboard" ngxClipboard title="Copy example code" [cbContent]="codeContent.scssCode"><i class="feather icon-copy link-icon"></i></button>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab title="MODULE" *ngIf="codeContent.moduleCode">
+      <ng-template ngbTabContent>
+        <pre><code [highlight]="codeContent.moduleCode"></code></pre>
+        <button class="btn btn-clipboard" ngxClipboard title="Copy example code" [cbContent]="codeContent.moduleCode"><i class="feather icon-copy link-icon"></i></button>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</section>

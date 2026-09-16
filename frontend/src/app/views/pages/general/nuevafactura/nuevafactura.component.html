@@ -1,0 +1,524 @@
+<div *blockUI="'emitirFactura'">
+  <p style="margin-top: 10px; font-size: 20px; text-align: center;"> Datos de la Factura</p>
+
+  <hr class="hrfactura">
+
+
+
+  <div class="row">
+    <div class="col">
+      <label for="">Tipo de Factura</label>
+      <ng-select [items]="tipodefacturaitems" bindLabel="name" bindValue="id" placeholder="Seleccione o escribe"
+        [(ngModel)]="tipodefactura">
+      </ng-select>
+    </div>
+    <div class="col">
+      <label class="control-label">Forma de pago</label>
+
+      <ng-select [items]="formasDePagoItems" bindLabel="name" bindValue="id" placeholder="Seleccione o escribe"
+        [(ngModel)]="formadepago" (click)="formaDePago()">
+
+      </ng-select>
+
+    </div>
+    <div class="col">
+      <label for="">Método de pago</label>
+      <ng-select [items]="metododepagoitems" bindLabel="name" bindValue="id" placeholder="Seleccione o escribe"
+        [(ngModel)]="metododepago">
+      </ng-select>
+    </div>
+  </div>
+
+
+  <div class="row" style="margin-top: 10px;">
+    <div class="col">
+      <label class="control-label">Cliente</label>
+
+      <ng-select [items]="clientes" (change)="setCP($event)" bindLabel="razonsocial" bindValue="id"
+        placeholder="Seleccione o escribe" [(ngModel)]="cliente">
+      </ng-select>
+    </div>
+
+
+    <div class="col-6">
+      <label class="control-label">Uso CDFI</label>
+
+      <ng-select [items]="cdfiItem" bindLabel="name" bindValue="id" placeholder="Seleccione o escribe"
+        [(ngModel)]="usocdfi">
+      </ng-select>
+    </div>
+  </div>
+  <div class="row" style="margin-top: 10px; margin-left: 1px;">
+    <!-- MODAL AGREGAR CLIENTE -->
+    <button type="button" class="btn btn-secondary btn-lg" (click)="openBasicModal(basicModal)">Agregar Cliente</button>
+    <ng-template #basicModal let-modal>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Nuevo Cliente</h5>
+        <button type="button" class="close" (click)="cerrarModalClientes()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label class="control-label">Razón Social*</label>
+                      <input type="text" class="form-control" [(ngModel)]="razonsocial"
+                        [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div><!-- Col -->
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label class="control-label">RFC*</label>
+                      <input type="text" class="form-control" [(ngModel)]="rfc" [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div><!-- Col -->
+                </div><!-- Row -->
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label class="control-label">Código Postal</label>
+                      <input type="text" class="form-control" autocomplete="off"  [(ngModel)]="cp" [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div><!-- Col -->
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label class="control-label">Correo</label>
+                      <input type="email" class="form-control" placeholder="Opcional" [(ngModel)]="correo"
+                        [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div><!-- Col -->
+                </div>
+                <!-- Button trigger modal -->
+                <button class="btn btn-primary" (click)="openXlModal(xlModal)">Agregar Direccion</button>
+                <!-- Modal -->
+                <ng-template #xlModal let-modal>
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Agregar Direccion</h5>
+                    <button type="button" class="close" (click)="modal.close('by: close icon')" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label class="control-label">Telefono</label>
+                        <input type="text" class="form-control" [(ngModel)]="telefono"
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                  </div><!-- Row -->
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label class="control-label">Calle</label>
+                        <input type="text" class="form-control" [(ngModel)]="calle"
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label class="control-label">Num.Exterior</label>
+                        <input type="text" class="form-control" [(ngModel)]="noext"
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label class="control-label">Num.Interior</label>
+                        <input type="text" class="form-control" [(ngModel)]="noint"
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+
+                    </div><!-- Col -->
+                  </div><!-- Row -->
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label class="control-label">Entre Calle</label>
+                        <input type="text" class="form-control" [(ngModel)]="entrecalle"
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label class="control-label">Y Entre Calle</label>
+                        <input type="text" class="form-control" [(ngModel)]="ycalle"
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                  </div><!-- Row -->
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label class="control-label">Colonia</label>
+                        <input type="text" class="form-control" [(ngModel)]="colonia"
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                   
+                  </div><!-- Row -->
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label class="control-label">Ciudad</label>
+                        <input type="text" class="form-control" [(ngModel)]="ciudad"
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label class="control-label">Estado</label>
+                        <input type="text" class="form-control" autocomplete="off" [(ngModel)]="estado"
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                  </div><!-- Row -->
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="modal.close('by: close button')">Ocultar
+                      Direccion</button>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModalClientes()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)=" guardarCliente() ">Guardar</button>
+
+      </div>
+    </ng-template>
+  </div>
+
+  <!--  TOGGLE-->
+  <p style="text-align: right; margin-top: 10px;" class="mb-2">
+    <button type="button" class="btn btn-outline-primary" (click)="isCollapsed = !isCollapsed"
+      [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+      Ver opciones adicionales ↓
+    </button>
+  </p>
+  <div id="collapseExample" [ngbCollapse]="isCollapsed">
+    <div class="card">
+      <div class="card-body">
+        <!--  opciones adicionales  -->
+        <div class="row">
+          <div class="col">
+            <label class="control-label"> Código Postal de la Sucursal</label>
+            <input class="form-control" type="text" maxlength="5" [(ngModel)]="codigopostal">
+          </div>
+          <div class="col">
+            <label class="control-label"> Moneda </label>
+            <ng-select [items]="monedaItems" bindLabel="name" bindValue="id" placeholder="Seleccione o escribe"
+              [(ngModel)]="moneda">
+            </ng-select>
+          </div>
+          <div class="col">
+            <label class="control-label" *ngIf="moneda === 'USD'"> Tipo de Cambio </label>
+            <input style="background-color: rgb(226, 233, 250)" class="form-control" type="text"
+              [(ngModel)]="tipodecambio" *ngIf="moneda === 'USD'">
+          </div>
+          <div class="col">
+            <label class="control-label"> Número de Pedido </label>
+            <input class="form-control" type="text" [(ngModel)]="numerodepedido">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3" style="margin-top: 10px;">
+            <label class="control-label"> Folio Interno </label>
+            <input class="form-control" type="text" [(ngModel)]="foliointerno">
+          </div>
+          <div class="col-6" style="margin-top: 10px;">
+            <div class=" divFecha">
+              <label class="control-label"> Fecha de Emisión</label>
+              <form class="form-inline">
+                <div class="form-group">
+                  <div class="input-group" (click)="d.toggle()">
+                    <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="fechadeadmision"
+                      ngbDatepicker #d="ngbDatepicker">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-light btn-icon calendar" type="button">
+                        <i data-feather="calendar" appFeatherIcon class="text-secondary"></i>
+                      </button>
+                      <p style="font-size: 10px; margin-left: 5px; margin-top: 5px;">Verifica que la fecha de emision
+                        cumpla <br> el rango de horas permitidos por el SAT (72 horas)</p>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+
+  <!--  TOGGLE-->
+
+  <p style="margin-top: 10px; font-size: 20px;"> Conceptos</p>
+
+  <hr class="hrfactura">
+
+
+
+  <div style="margin-top: 15px;" *ngFor="let c of conceptos; let i = index">
+
+    <div class="row">
+      <div class="col-6" style="margin-bottom: 10px;">
+        <label class="control-label">Producto/Servicio</label>
+
+        <ng-select [items]="productos" bindLabel="name" bindValue="id" placeholder="Seleccione o escribe"
+          [(ngModel)]="c.idproducto" (change)="indexConcepto(i, $event)">
+        </ng-select>
+      </div>
+      <div class="col-4">
+        <button type="button" class="btn btn-secondary btn-lg" style="margin-top: 27px;"
+          (click)="openXlModal(xlModal)">Agregar Producto</button>
+        <ng-template #xlModal let-modal>
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Nuevo Producto o Servicio</h5>
+            <button type="button" class="close" (click)="modal.close('by: close icon')" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12 stretch-card">
+                <div class="card">
+                  <div class="card-body">
+
+
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="form-group">
+                          <label class="control-label">Descripción*</label>
+                          <input type="text" class="form-control" required maxlength="1000" style="height: 60px;"
+                            placeholder="Maximo 1000 caracteres" [(ngModel)]="descripcion"
+                            [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-12">
+
+                        <div class="form-group">
+                          <label class="control-label">Nombre Interno </label>
+                          <input type="text" class="form-control" [(ngModel)]="nombreinterno" placeholder="Opcional"
+                            [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                    </div><!-- Row -->
+
+                    <div class="row">
+                      <div class="col-sm">
+                        <div class="form-group">
+                          <label class="control-label">Precio*</label>
+                          <input type="text" class="form-control" [(ngModel)]="precio"
+                            [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                      <div class="col-sm">
+                        <div class="form-group">
+                          <label class="control-label">Código del SAT*</label> <a
+                            href="http://pys.sat.gob.mx/PyS/catPyS.aspx" target="_blank"> catalogo</a>
+                          <input type="text" class="form-control" [(ngModel)]="claveproducto"
+                            [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                      <div class="col-sm">
+                        <label class="control-label">Unidad</label>
+
+                        <ng-select [items]="unidadItems" bindLabel="name" bindValue="id"
+                          placeholder="Seleccione o escribe" [(ngModel)]="unidad">
+                        </ng-select>
+
+
+                      </div>
+                    </div><!-- Row -->
+
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label class="control-label">No. Identificación Interno</label>
+                          <input type="text" class="form-control" [(ngModel)]="noidentificacion" placeholder="Opcional"
+                            [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label class="control-label">Cuenta Predial</label>
+                          <input type="text" class="form-control" autocomplete="off" placeholder="Opcional"
+                            [(ngModel)]="cuentapredial" [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                    </div><!-- Row -->
+
+                    <div class="row">
+                      <div class="col-sm">
+                        <label class="control-label">IVA</label>
+                        <ng-select [items]="ivaItems" bindLabel="name" bindValue="id" placeholder="Seleccione o escribe"
+                          [(ngModel)]="iva">
+                        </ng-select>
+
+
+                      </div>
+                      <div class="col-sm">
+                        <label class="control-label">IVA RET</label>
+
+                        <ng-select [items]="ivaretItems" bindLabel="name" bindValue="id"
+                          placeholder="Seleccione o escribe" [(ngModel)]="ivaret">
+                        </ng-select>
+
+
+                      </div>
+                      <div class="col-sm">
+                        <label class="control-label">ISR</label>
+
+                        <ng-select [items]="isrItems" bindLabel="name" bindValue="id" placeholder="Seleccione o escribe"
+                          [(ngModel)]="isr">
+                        </ng-select>
+
+
+                      </div>
+                      <div class="col-sm">
+                        <div class="form-group">
+                          <label class="control-label">IEPS</label>
+                          <input type="number" class="form-control" autocomplete="off" placeholder="Asignar Porcentaje"
+                            min="0" [(ngModel)]="ieps" [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                    </div><!-- Row -->
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="cerrarModalProductos()">Cerrar</button>
+            <button type="button" class="btn btn-primary" (click)=" guardarProducto() ">Guardar</button>
+
+          </div>
+        </ng-template>
+      </div>
+
+
+    </div>
+
+
+
+    <div class="row">
+      <div class="col">
+        <label for="">Cantidad</label>
+        <input style="background-color: rgb(226, 233, 250);" class="form-control" type="number" [(ngModel)]="c.cantidad"
+          (change)="onChangeCantidad(i)" [ngModelOptions]="{standalone: true}">
+      </div>
+      <div class="col">
+        <label for="">Unidad</label>
+        <ng-select style="background-color: rgb(226, 233, 250);" [items]="unidadItems" bindLabel="name" bindValue="id"
+          placeholder="Seleccione o escribe" [(ngModel)]="c.unidad" [ngModelOptions]="{standalone: true}">
+        </ng-select>
+      </div>
+      <div class="col">
+        <label for="">Precio Unitario</label>
+        <input class="form-control" type="number" [(ngModel)]="c.valorunitario" min="0"
+          [ngModelOptions]="{standalone: true}" (change)="onChangeDescuento(i)">
+
+      </div>
+      <div class="col">
+        <label for="">Importe de Descuento</label>
+        <input class="form-control" type="number" [(ngModel)]="c.descuento" [ngModelOptions]="{standalone: true}"
+          (change)="onChangeDescuento(i)" placeholder="Ej. $200.00" style="background-color: rgb(226, 233, 250);">
+      </div>
+      <div class="col">
+        <label for="">Subtotal</label>
+        <div class="form-control" type="number" style="background-color: rgb(226, 233, 250);">
+          <p>{{c.subtotal}}</p>
+        </div>
+      </div>
+      <div class="col">
+        <label for="">Impuestos</label>
+        <div type="number">
+          <div style="background-color: rgb(182, 202, 250); border-radius: 6px; width: 200px; margin-bottom: 5px;">
+            <p>IVA- ${{c.mostrariva}}</p>
+          </div>
+          <div style="background-color: rgb(182, 202, 250); border-radius: 6px; width: 200px; margin-bottom: 5px;">
+            <p> IVA RET - ${{c.mostrarivaret}}</p>
+          </div>
+          <div style="background-color: rgb(182, 202, 250); border-radius: 6px; width: 200px; margin-bottom: 5px;">
+            <p> ISR - ${{c.mostrarisr}}</p>
+          </div>
+          <div style="background-color: rgb(182, 202, 250); border-radius: 6px; width: 200px; margin-bottom: 5px;">
+            <p> IEPS - ${{c.mostrarieps}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <label for="">Total de la Línea</label>
+        <div class="form-control" type="number" style="background-color: rgb(226, 233, 250);">
+          <p>{{c.mostrarTotal}}</p>
+        </div>
+      </div>
+
+    </div>
+    <div style="text-align: right; margin-top: 10px;">
+      <button type="button" class="btn btn-outline-danger" (click)="eliminarConcepto(i)"> <i
+          class="feather icon-trash"></i></button>
+    </div>
+  </div>
+  <div>
+    <button type="button" class="btn btn-outline-primary" style=" margin-bottom: 10px;" (click)="AgregarConcepto()"><i
+        class="feather plus-circle "></i>Agregar Concepto</button>
+  </div>
+  <hr class="hrfactura">
+  <div class="row float-right">
+    <div class="col">
+      <label for="">Subtotal</label>
+      <p>{{subtotal}}</p>
+    </div>
+    <div class="col" *ngIf="totaliva8 >0 || totaliva8 === ''">
+      <label for="">IVA 8%</label>
+      <p>{{mostrarivatotal8}}</p>
+    </div>
+    <div class="col" *ngIf="totaliva16 >0|| mostrarivatotal16 == ''">
+      <label for="">IVA 16%</label>
+      <p>{{mostrarivatotal16}}</p>
+    </div>
+    <div class="col" *ngIf="totaliva0">
+      <label for="">IVA 0</label>
+      <p>0.00</p>
+    </div>
+    <div class="col" *ngIf="importeret >=1">
+      <label for="">IVA RET</label>
+      <p>{{mostrarimporteret}}</p>
+    </div>
+    <div class="col" *ngIf="isr >=1">
+      <label for="">ISR</label>
+      <p>{{mostrarimporteisr}}</p>
+    </div>
+    <div class="col" *ngIf="iepstotal >0">
+      <label for="">IEPS</label>
+      <p>{{mostrarimporteieps}}</p>
+    </div>
+    <div class="col">
+      <label for="">Total</label>
+      <p>{{total}}</p>
+    </div>
+    <div class="col">
+      <button type="button" class="btn btn-primary" [disabled]="activeTimbrar" (click)="emitirFactura()"> Emitir Factura</button>
+    </div>
+  </div>
+
+</div>

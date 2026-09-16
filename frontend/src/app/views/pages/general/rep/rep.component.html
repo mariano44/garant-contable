@@ -1,0 +1,131 @@
+<div *blockUI="'sellarPago'">
+
+
+    <div style="text-align: center;">
+        <h3>RECIBOS ELECTRÓNICOS DE PAGO</h3>
+    </div>
+
+    <hr>
+
+    <div style="margin: 0px 130px 0 130px">
+        <!-- Aqui van los inputs,etc-->
+        <div class="row">
+
+            <div class="col">
+                <p><i class="feather icon-info" style="width: 14px; height: 14px;" placement="top"
+                        ngbTooltip="Aqui captura la fecha en la que recibiste el pago de tu cliente"></i> Fecha de
+                    emisión</p>
+                <input type="date" class="form-control" [(ngModel)]="fechaemision">
+            </div>
+            <div class="col">
+                <p>Forma de Pago</p>
+                <ng-select [items]="formasDePagoItems" bindLabel="name" bindValue="id"
+                    placeholder="Seleccione o escribe" [(ngModel)]="formadepago">
+
+                </ng-select>
+            </div>
+            <div class="col">
+                <p>Moneda</p>
+                <ng-select [items]="monedaItems" bindLabel="name" bindValue="id" placeholder="Seleccione o escribe"
+                    [(ngModel)]="tipocambio">
+                </ng-select>
+            </div>
+            <div class="col">
+                <p><i class="feather icon-info" style="width: 14px; height: 14px;" placement="top"
+                        ngbTooltip="Este importe muestra la cantidad total por la que se emitira el REP que estas elaborando"></i>
+                    Importe total del REP</p>
+                <input type="text" class="form-control" [(ngModel)]="monto"
+                    style="background-color: rgb(225, 223, 223);" readonly>
+            </div>
+        </div>
+        <!--Fin del row-->
+        <div class="row" style="margin-top: 20px;">
+            <div class="col">
+                <p>RFC Banco Emisor</p>
+                <input type="text" class="form-control" [(ngModel)]="rfcbanco" placeholder="Opcional">
+            </div>
+            <div class="col">
+                <p>Cuenta Ordenante</p>
+                <input type="text" class="form-control" [(ngModel)]="cuentaordenante" placeholder="Opcional">
+            </div>
+            <div class="col">
+                <p>Banco Emisor Cuenta Beneficiaria</p>
+                <input type="text" class="form-control" [(ngModel)]="bancoemisor" placeholder="Opcional">
+            </div>
+            <div class="col">
+                <p>Cuenta</p>
+                <input type="text" class="form-control" [(ngModel)]="cuenta" placeholder="Opcional">
+            </div>
+            <div class="col">
+                <p>Folio consecutivo del REP</p>
+                <input type="text" class="form-control" readonly [(ngModel)]="folioconsecutivoMostrar">
+            </div>
+        </div>
+        <!--Fin del row-->
+        <div class="row" style="margin-top: 30px;">
+            <div class="col-4">
+                <p><i class="feather icon-info" style="width: 14px; height: 14px;" placement="top"
+                        ngbTooltip="Primero selecciona un cliente para mostrar los CFDI'S que aun tienen importes pendientes de pago "></i>
+                    Selecciona tu cliente aqui</p>
+                <ng-select 
+                    [items]="clientes" 
+                    bindLabel="razonsocial" 
+                    bindValue="id" 
+                    placeholder="Seleccione o escribe"
+                    [(ngModel)]="cliente" 
+                    (clear)="limpiaFacturas()"
+                    (change)="OnchangeCliente($event)" 
+                    placeholder="Buscar Cliente">
+                </ng-select>
+            </div>
+
+        </div>
+        <!--Fin del row-->
+
+        <div class="row" style="margin-top:20px">
+            <!-- Aqui va el TABLE-->
+            <table class="table-bordered" style="text-align: center;  width:100%;">
+
+                <thead>
+                    <!--HEAD-->
+                    <tr>
+                        <th>Seleccionar</th>
+                        <th>UUID</th>
+                        <th> <i class="feather icon-info" style="width: 14px; height: 14px;" placement="top"
+                                ngbTooltip="Es el importe pendiente de pago para cada cfdi"></i> Saldo Pendiente de Pago
+                        </th>
+                        <th> <i class="feather icon-info" style="width: 14px; height: 14px;" placement="top"
+                                ngbTooltip="Aqui captura el importe que corresponde al pago que recibiste de tu cliente, ya sea el importe del pago total o un importe parcial"></i>
+                            Imp. a Pagar</th>
+                        <th> <i class="feather icon-info" style="width: 14px; height: 14px;" placement="top"
+                                ngbTooltip="Es el importe que quedará pendiente de pago si el importe a pagara es parcial"></i>
+                            Diferencia</th>
+                        <th>Parcialidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--BODY-->
+                    <tr *ngFor="let c of cfdisget; let i = index">
+                        <th style="width: 100px;"><input type="checkbox" [(ngModel)]="c.seleccionado"
+                                (change)="onChangeSeleccionado($event, i)"></th>
+                        <th style="width: 350px;">{{c.uuidp}}</th>
+                        <th style="width: 150px;">{{c.impanterior}}</th>
+                        <th style="width: 150px;"><input type="number" min="0" class="form-control"
+                                style="text-align: center;" [disabled]="!c.seleccionado" [(ngModel)]="c.pagado"
+                                (change)="onChangePagado($event, i )"></th>
+                        <th style="width: 150px;">{{c.impinsolutovista}}</th>
+                        <th style="width: 150px;">{{c.mensualidad}}</th>
+                    </tr>
+                    <tr>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row" style="margin-top: 40px; text-align: center;">
+            <div class="col" style="text-align: center;">
+                <button type="button" class="btn btn-primary btn-lg" [disabled]="activeSellar" (click)="sellarPago()">Sellar Pago</button>
+            </div>
+        </div>
+    </div>

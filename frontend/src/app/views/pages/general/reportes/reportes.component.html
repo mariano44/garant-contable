@@ -1,0 +1,760 @@
+<div class="row">
+  <div class="col-xl-10 main-content pl-xl-4 pr-xl-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Reportes</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<div class="profile-page tx-13">
+  <div class="row">
+    <div class="col-md-3 grid-margin stretch-card" *blockUI="'ejercicioblock'">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12 d-flex align-items-center">
+              <h6 class="card-title">Seleccionar Ejercicio</h6>
+            </div>
+          </div>
+          <ng-select 
+            [items]="ejercicios"
+            [disabled]="ejercicioEnable"
+            notFoundText="No hay ejercicios registrados"
+            bindLabel="anio"
+            bindValue="anio"
+            placeholder="Seleccionar ejercicio"
+            [(ngModel)]="selectedejercicio"
+            (change)="changeEjercicio()">
+          </ng-select>        
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 grid-margin stretch-card" *blockUI="'periodoblock'">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12 d-flex align-items-center" >
+              <h6 class="card-title">Seleccionar Periodo</h6>
+            </div>
+          </div>
+          <ng-select 
+            [items]="periodos"
+            [disabled]="periodosEnable"
+            notFoundText="No hay periodos registrados"
+            bindLabel="mes"
+            bindValue="periodo"
+            placeholder="Seleccionar Periodo"
+            [(ngModel)]="selectedperiodo"
+            (change)="changePeriodos()">
+          </ng-select>        
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 grid-margin">
+      <div class="header-links">
+        <ul ngbNav #defaultNav="ngbNav" [(activeId)]="defaultNavActiveId" class="nav-tabs links d-flex align-items-center mt-3 mt-md-0">
+          <li [ngbNavItem]="1" class="header-link-item d-flex align-items-center active">
+            <a ngbNavLink class="pt-1px d-none d-md-block">Facturas Emitidas</a>
+            <ng-template ngbNavContent>
+              <div class="row profile-body">
+                <div class="col-md-12 col-xl-12 middle-wrapper">
+                  <div class="row" *blockUI="'emitidasblock'">
+                    <div class="col-md-12 grid-margin">
+                      <div class="card rounded">
+                        <div class="card-header">
+                          <div class="col-md-6 col-xl-6 middle-wrapper">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                  <i class="feather icon-search"></i>
+                                </div>
+                              </div>
+                              <input type="text" class="form-control" id="navbarForm" placeholder="Buscar"  (keyup)="FilterBy($event,'emi')"> 
+                            </div>
+                            
+                          </div>
+                        </div>
+                        <div class="card-body" style="max-height: 550px;">
+                          <div class="table">
+                            <ngx-datatable
+                            *ngIf="showthis"
+                            #table
+                            style="height: 530px;"
+                            class="material expandable"
+                            [rows]="emitidas"                       
+                            [loadingIndicator]="loadingIndicator"
+                            [columnMode]="ColumnMode.force"
+                            [headerHeight]="50"
+                            [footerHeight]="50"
+                            [rowHeight]="70"
+                            [limit]="35"
+                            [scrollbarH]="true"
+                            [scrollbarV]="true"
+                            [columns]="columnsemi"
+                          >
+                            <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow>
+                              <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                                <div style="padding-left:10px; padding-bottom: 10px; max-height: 100px; overflow-y:auto;">
+                                  <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th>Clv. del Prod/Serv</th>
+                                        <th>No Iden.</th>
+                                        <th>Cantidad</th>
+                                        <th>Clv. Unidad</th>
+                                        <th>Unidad</th>
+                                        <th>Descripción</th>
+                                        <th>V. Unitario</th>
+                                        <th>Descuento</th>
+                                        <th>Importe</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr *ngFor="let det of row.det; index as i;" class="table-active">                                          
+                                        <td>{{det.clv}}</td>
+                                        <td>{{det.noiden}}</td>
+                                        <td>{{det.can}}</td>
+                                        <td>{{det.clvu}}</td>
+                                        <td>{{det.uni}}</td>
+                                        <td style="max-width: 150px; white-space: normal;">{{det.desc}}</td>
+                                        <td>{{det.vuni}}</td>
+                                        <td>{{row.descuento}}</td>
+                                        <td>{{row.total}}</td>                                                                          
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </ng-template>
+                            </ngx-datatable-row-detail>
+                            <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+                              <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                                <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Expandir/Retraer Registro" (click)="toggleExpandRow(row)">
+                                </a>
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Receptor" [width]="300">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                <div style="max-width: 250px; white-space: normal;" title="{{row.receptor}}">
+                                  {{row.receptor}}
+                                </div>
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Rfc" [width]="150" prop="rfc">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                {{row.rfc}}
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Fecha" [width]="150">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                {{row.fecha}}
+                              </ng-template>
+                            </ngx-datatable-column> 
+                            <ngx-datatable-column name="Total" [width]="150" >                     
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                {{row.total}}
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Estado" [width]="150">                              
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                {{row.estado}}
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Documento" [width]="150">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                {{row.documento}}
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="UUID" [width]="200">                              
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                <div style="max-width: 150px; white-space: normal;">
+                                  {{row.uuid}}
+                                </div>
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Tipo" [width]="100">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                {{row.tipo}}
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Acciones" [width]="200" 
+                              [sortable]="false" 
+                              [resizeable]="false" 
+                              [draggable]="false">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                <button title="Descargar XML" class="btn btn-success btn-icon-text" (click)="downloadFile(row,'emi')">                        
+                                  <i class="feather icon-file-text btn-icon-prepend"></i>
+                                </button>
+                                <button title="Descargar PDF" class="btn btn-danger btn-icon-text" (click)="exportPDFEmitido(row,row.tipo)">                        
+                                  <i class="feather icon-file btn-icon-prepend"></i>
+                                </button>
+                              </ng-template>
+                            </ngx-datatable-column>
+                          </ngx-datatable>
+                            <!-- <table class="table" *ngIf="showthis">
+                              <thead>
+                                <tr>
+                                  <th>Receptor</th>
+                                  <th>RFC</th>
+                                  <th>Fecha</th>
+                                  <th>Total</th>
+                                  <th>Estado</th>
+                                  <th>Documento</th>
+                                  <th>UUID</th>
+                                  <th>Tipo</th>
+                                  <th>Acciones</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let fac of emitidas; index as i;" [ngClass]="{'table-active':fac.padre}" *ngIf="fac.padre ">
+                                  <td>
+                                    <p>
+                                      <button *ngIf="fac.padre" type="button" class="btn btn-outline-primary btn-sm" (click)="fac.collapse = !fac.collapse">   
+                                              <i class="feather btn-icon-prepend" [ngClass]="{'icon-chevron-down':!fac.collapse, 'icon-chevron-up':fac.collapse}"></i>
+                                      </button>
+                                    </p>
+                                  </td>   
+                                  <td style="max-width: 250px; white-space: normal;">{{fac.receptor}}</td>
+                                  <td>{{fac.rfc}}</td>
+                                  <td>{{fac.fecha}}</td>
+                                  <td class="text-right">{{fac.total}}</td>
+                                  <td>{{fac.estado}}</td>
+                                  <td style="max-width: 150px; white-space: normal;">{{fac.documento}}</td>
+                                  <td>{{fac.uuid}}</td>
+                                  <td>{{fac.tipo}}</td>
+                                  <td >
+                                    <button *ngIf="fac.padre" title="Descargar XML" class="btn btn-success btn-icon-text" (click)="downloadFile(fac,'emi')">                        
+                                      <i class="feather icon-file-text btn-icon-prepend"></i>
+                                    </button>
+                                  </td>                                  
+                                </tr>
+                              </tbody>
+                            </table> -->
+                            <table class="table" *ngIf="showthat">
+                              <thead>
+                                <tr>
+                                  <th>Receptor</th>
+                                  <th>RFC</th>
+                                  <th>Fecha</th>
+                                  <th>Total</th>
+                                  <th>Estado</th>
+                                  <th>Documento</th>
+                                  <th>UUID</th>
+                                  <th>Tipo</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="8">No existen facturas para este periodo</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="2" class="header-link-item ml-3 pl-3 border-left d-flex align-items-center">
+            <a ngbNavLink class="pt-1px d-none d-md-block" >Facturas Recibidas</a>
+            <ng-template ngbNavContent>
+              <div class="row profile-body">
+                <div class="col-md-12 col-xl-12 middle-wrapper">
+                  <div class="row" *blockUI="'recibidasblock'">
+                    <div class="col-md-12 grid-margin">
+                      <div class="card rounded">
+                        <div class="card-header">
+                          <div class="col-md-6 col-xl-6 middle-wrapper"></div>
+                            <div class="col-md-6 col-xl-6 middle-wrapper">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <div class="input-group-text">
+                                    <i class="feather icon-search"></i>
+                                  </div>
+                                </div>
+                                <input type="text" class="form-control" id="navbarForm" placeholder="Buscar" (keyup)="FilterBy($event,'rec')"> 
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card-body" style="max-height: 550px;">
+                            <div class="table">
+                              <ngx-datatable
+                              *ngIf="showthis"
+                              #tablereb
+                              style="height: 530px;"
+                              class="material expandable"
+                              [rows]="recibidas"                       
+                              [loadingIndicator]="loadingIndicator"
+                              [columnMode]="ColumnMode.force"
+                              [headerHeight]="50"
+                              [footerHeight]="50"
+                              [rowHeight]="70"
+                              [limit]="35"
+                              [scrollbarH]="true"
+                              [scrollbarV]="true"
+                              [columns]="columnsreb"
+                            >
+                              <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow>
+                                <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                                  <div style="padding-left:10px; padding-bottom: 10px; max-height: 100px; overflow-y:auto;">
+                                    <table class="table">
+                                      <thead>
+                                        <tr>
+                                          <th>Clv. del Prod/Serv</th>
+                                          <th>No Iden.</th>
+                                          <th>Cantidad</th>
+                                          <th>Clv. Unidad</th>
+                                          <th>Unidad</th>
+                                          <th>Descripción</th>
+                                          <th>V. Unitario</th>
+                                          <th>Descuento</th>
+                                          <th>Importe</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr *ngFor="let det of row.det; index as i;" class="table-active">                                          
+                                          <td>{{det.clv}}</td>
+                                          <td>{{det.noiden}}</td>
+                                          <td>{{det.can}}</td>
+                                          <td>{{det.clvu}}</td>
+                                          <td>{{det.uni}}</td>
+                                          <td style="max-width: 150px; white-space: normal;">{{det.desc}}</td>
+                                          <td>{{det.vuni}}</td>
+                                          <td>{{det.descuento}}</td>
+                                          <td>{{det.imp}}</td>                                                                          
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </ng-template>
+                              </ngx-datatable-row-detail>
+                              <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+                                <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                                  <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Expandir/Retraer Registro" (click)="toggleExpandRow(row)">
+                                  </a>
+                                </ng-template>
+                              </ngx-datatable-column>
+                              <ngx-datatable-column name="Emisor" [width]="300">
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                  <div style="max-width: 250px; white-space: normal;">
+                                    {{row.emisor}}
+                                  </div>
+                                </ng-template>
+                              </ngx-datatable-column>
+                              <ngx-datatable-column name="Rfc" [width]="150" prop="rfc">
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                  {{row.rfc}}
+                                </ng-template>
+                              </ngx-datatable-column>
+                              <ngx-datatable-column name="Fecha" [width]="150">
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                  {{row.fecha}}
+                                </ng-template>
+                              </ngx-datatable-column> 
+                              <ngx-datatable-column name="Total" [width]="150" >                       
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                  {{row.total}}
+                                </ng-template>
+                              </ngx-datatable-column>
+                              <ngx-datatable-column name="Estado" [width]="100">                              
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                  {{row.estado}}
+                                </ng-template>
+                              </ngx-datatable-column>
+                              <ngx-datatable-column name="Documento" [width]="150">
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                  <div style="max-width: 150px; white-space: normal;">
+                                    {{row.documento}}
+                                  </div>
+                                </ng-template>
+                              </ngx-datatable-column>
+                              <ngx-datatable-column name="UUID" [width]="200">                              
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                  <div style="max-width: 150px; white-space: normal;">
+                                    {{row.uuid}}
+                                  </div>
+                                </ng-template>
+                              </ngx-datatable-column>
+                              <ngx-datatable-column name="Tipo" [width]="80">
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                  {{row.tipo}}
+                                </ng-template>
+                              </ngx-datatable-column>
+                              <ngx-datatable-column name="Rubro" [width]="150">
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                  <div style="max-width: 150px; white-space: normal;">
+                                    {{row.rubro}}
+                                  </div>
+                                </ng-template>
+                              </ngx-datatable-column>
+                              <ngx-datatable-column name="Acciones" [width]="200" 
+                                [sortable]="false" 
+                                [resizeable]="false" 
+                                [draggable]="false">
+                                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                  <button title="Descargar XML" class="btn btn-success btn-icon-text" (click)="downloadFile(row,'emi')">                        
+                                    <i class="feather icon-file-text btn-icon-prepend"></i>
+                                  </button>
+                                  <button title="Descargar PDF" class="btn btn-danger btn-icon-text" (click)="exportPDFRecibido(row,row.tipo)">
+                                    <i class="feather icon-file btn-icon-prepend"></i>
+                                  </button>
+                                </ng-template>
+                              </ngx-datatable-column>
+                            </ngx-datatable>
+                              <!-- <table class="table" *ngIf="showthis">
+                                <thead>
+                                  <tr>
+                                    <th>Emisor</th>
+                                    <th>RFC</th>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Documento</th>
+                                    <th>UUID</th>
+                                    <th>Tipo</th>
+                                    <th>Rubro</th>
+                                    <th>Acciones</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let reb of recibidas; index as i;" >
+                                    <td style="max-width: 250px; white-space: normal;">{{reb.emisor}}</td>
+                                    <td>{{reb.rfc}}</td>
+                                    <td>{{reb.fecha}}</td>
+                                    <td class="text-right">{{reb.total}}</td>
+                                    <td>{{reb.estado}}</td>
+                                    <td style="max-width: 150px; white-space: normal;">{{reb.documento}}</td>
+                                    <td>{{reb.uuid}}</td>
+                                    <td>{{reb.tipo}}</td>
+                                    <td>{{reb.rubro}}</td>
+                                    <td>
+                                      <button title="Descargar XML" class="btn btn-success btn-icon-text" (click)="downloadFile(reb,'reb_')">                        
+                                        <i class="feather icon-file-text btn-icon-prepend"></i>                                          
+                                      </button>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table> -->
+                              <table class="table" *ngIf="showthat">
+                                <thead>
+                                  <tr>
+                                    <th>Receptor</th>
+                                    <th>RFC</th>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Documento</th>
+                                    <th>UUID</th>
+                                    <th>Tipo</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td class="text-center" colspan="8">No existen facturas para este periodo</td>
+                                  </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="3" class="header-link-item ml-3 pl-3 border-left d-flex align-items-center">
+            <a ngbNavLink class="pt-1px d-none d-md-block" >Nóminas</a>
+            <ng-template ngbNavContent>
+              <div class="row profile-body">
+                <div class="col-md-12 col-xl-12 middle-wrapper">
+                  <div class="row" *blockUI="'nominasblock'">
+                    <div class="col-md-12 grid-margin">
+                      <div class="card rounded">
+                        <div class="card-header">
+                          <div class="col-md-6 col-xl-6 middle-wrapper"></div>
+                            <div class="col-md-6 col-xl-6 middle-wrapper">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <div class="input-group-text">
+                                    <i class="feather icon-search"></i>
+                                  </div>
+                                </div>
+                                <input type="text" class="form-control" id="navbarForm" placeholder="Buscar" (keyup)="FilterBy($event,'nom')"> 
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card-body" style="max-height: 550px;">
+                            <div class="table">
+                              <ngx-datatable
+                              *ngIf="showthis"
+                              #tablenom
+                              style="height: 530px;"
+                              class="material expandable"
+                              [rows]="nominas"                       
+                              [loadingIndicator]="loadingIndicator"
+                              [columnMode]="ColumnMode.force"
+                              [headerHeight]="50"
+                              [footerHeight]="50"
+                              [rowHeight]="70"
+                              [limit]="35"
+                              [scrollbarH]="true"
+                              [scrollbarV]="true"
+                              [columns]="columnsnom"
+                            >
+                            <ngx-datatable-column name="Receptor" [width]="300">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                <div style="max-width: 250px; white-space: normal;">
+                                  {{row.receptor}}
+                                </div>
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Rfc" [width]="150" prop="rfc">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                {{row.rfc}}
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Fecha" [width]="150">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                {{row.fecha}}
+                              </ng-template>
+                            </ngx-datatable-column> 
+                            <ngx-datatable-column name="Total" [width]="150" >                           
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                {{row.total}}
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Estado" [width]="100">                              
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                {{row.estado}}
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Documento" [width]="150">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                <div style="max-width: 150px; white-space: normal;">
+                                  {{row.documento}}
+                                </div>
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="UUID" [width]="200">                              
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                <div style="max-width: 150px; white-space: normal;">
+                                  {{row.uuid}}
+                                </div>
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Tipo" [width]="80">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                {{row.tipo}}
+                              </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Acciones" [width]="200" 
+                              [sortable]="false" 
+                              [resizeable]="false" 
+                              [draggable]="false">
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                <button title="Descargar XML" class="btn btn-success btn-icon-text" (click)="downloadFile(row,'nom_')">                        
+                                  <i class="feather icon-file-text btn-icon-prepend"></i>
+                                </button>
+                                <button title="Descargar PDF" class="btn btn-danger btn-icon-text" (click)="exportPDFNomina(row)">
+                                  <i class="feather icon-file btn-icon-prepend"></i>
+                                </button>
+                              </ng-template>
+                            </ngx-datatable-column>
+                          </ngx-datatable>
+                            <!-- <div class="table-responsive">
+                              <table class="table" *ngIf="showthis">
+                                <thead>
+                                  <tr>
+                                    <th>Receptor</th>
+                                    <th>RFC</th>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Documento</th>
+                                    <th>UUID</th>
+                                    <th>Tipo</th>
+                                    <th>Acciones</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let nom of nominas; index as i;" >
+                                    <td style="max-width: 250px; white-space: normal;">{{nom.receptor}}</td>
+                                    <td>{{nom.rfc}}</td>
+                                    <td>{{nom.fecha}}</td>
+                                    <td class="text-right">{{nom.total}}</td>
+                                    <td>{{nom.estado}}</td>
+                                    <td style="max-width: 150px; white-space: normal;">{{nom.documento}}</td>
+                                    <td>{{nom.uuid}}</td>
+                                    <td>{{nom.tipo}}</td>
+                                    <td>
+                                      <button title="Descargar XML" class="btn btn-success btn-icon-text" (click)="downloadFile(nom,'nom_')">                        
+                                        <i class="feather icon-file-text btn-icon-prepend"></i>
+                                      </button>
+                                      <button title="Descargar PDF" class="btn btn-danger btn-icon-text" (click)="exportPDFNomina(nom)">                        
+                                        <i class="feather icon-file btn-icon-prepend"></i>
+                                      </button>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table> -->
+                              <table class="table" *ngIf="showthat">
+                                <thead>
+                                  <tr>
+                                    <th>Receptor</th>
+                                    <th>RFC</th>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Documento</th>
+                                    <th>UUID</th>
+                                    <th>Tipo</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td class="text-center" colspan="8">No existen nóminas emitidas para este periodo</td>
+                                  </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="4" class="header-link-item ml-3 pl-3 border-left d-flex align-items-center">
+            <a ngbNavLink class="pt-1px d-none d-md-block" >Comportamiento Histórico </a>
+            <ng-template ngbNavContent>
+              <div class="row profile-body">
+                <div class="col-md-12 col-xl-12 middle-wrapper">
+                  <div class="row" *ngIf="PorPeriodo">
+                    <div class="col-md-12 grid-margin" *blockUI="'historicoporperiodo'">
+                      <div class="card rounded">
+                        <div class="card-header">
+                          <div class="col-md-12 col-xl-12 middle-wrapper">                            
+                            <h6 class="card-title">Comportamiento Histórico Del Mes</h6>
+                          </div> 
+                          <div class="row">                            
+                            <div class="col-md-8">
+                              <span class="text-muted tx-13 mb-3 mb-md-0">Las cantidades mostradas son el resultado de los ingresos y egresos del ejercicio y periodo seleccionado.</span>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input" [(ngModel)]="contotalh" [ngModelOptions]="{standalone: true}" (click)="showTotalesh($event)">
+                                  <i class="input-frame"></i>
+                                  Sin IVA.
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-body">
+                          <canvas baseChart 
+                            height="80"
+                            [datasets]="mixedChartDataPP"
+                            [labels]="mixedChartLabelsPP"
+                            [colors]="mixedChartColors"
+                            [chartType]="mixedChartType"
+                            [options]="mixedChartOptionsPP">
+                          </canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" *blockUI="'historicoporejercicio'">
+                    <div class="col-md-12 grid-margin">
+                      <div class="card rounded">
+                        <div class="card-header">
+                          <div class="col-md-12 col-xl-12 middle-wrapper">
+                            <h6 class="card-title">Comportamiento Histórico Por Ejercicio</h6>
+                          </div> 
+                          <div class="row">
+                            <div class="col-md-8">
+                              <span class="text-muted tx-13 mb-3 mb-md-0">Las cantidades mostradas son el resultado de los ingresos y egresos del ejercicio seleccionado.</span>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input" [(ngModel)]="contotalh" [ngModelOptions]="{standalone: true}" (click)="showTotalesh($event)">
+                                  <i class="input-frame"></i>
+                                  Sin IVA.
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-body">
+                          <canvas baseChart 
+                            height="80"
+                            [datasets]="mixedChartData"
+                            [labels]="mixedChartLabels"
+                            [colors]="mixedChartColors"
+                            [chartType]="mixedChartType"
+                            [options]="mixedChartOptions">
+                          </canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>                  
+                </div>
+              </div>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="5" class="header-link-item ml-3 pl-3 border-left d-flex align-items-center">
+            <a ngbNavLink class="pt-1px d-none d-md-block" >Gastos Por Rubros</a>
+            <ng-template ngbNavContent>
+              <div class="row" *blockUI="'rubrosporperiodo'">
+                <div class="col-xl-12 grid-margin stretch-card">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="card-header">
+                        <div class="col-md-6 col-xl-6 middle-wrapper">
+                          <h6 class="card-title">Gastos por rubros</h6>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-8">
+                            <p class="text-muted tx-13 mb-3 mb-md-0">Las cantidades mostradas son el resultado de los ingresos y egresos del ejercicio y/o periodo seleccionado.</p>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="form-check form-check-inline">
+                              <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" [(ngModel)]="contotalr" [ngModelOptions]="{standalone: true}" (click)="showTotalesr($event)">
+                                <i class="input-frame"></i>
+                                Sin IVA.
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <apx-chart
+                        [series]="donutChartOptions.nonAxisSeries"
+                        [labels]="donutChartOptions.labels"
+                        [chart]="donutChartOptions.chart"
+                        [colors]="donutChartOptions.colors"
+                        [stroke]="donutChartOptions.stroke"
+                        [legend]="donutChartOptions.legend"
+                        [dataLabels]="donutChartOptions.dataLabels"
+                        [tooltip]="donutChartOptions.tooltip"
+                      ></apx-chart>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </li>
+        </ul>    
+        <div [ngbNavOutlet]="defaultNav" class="mt-3"></div>    
+      </div>
+    </div>
+  </div>
+</div>

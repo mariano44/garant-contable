@@ -1,0 +1,810 @@
+<ul ngbNav #defaultNav="ngbNav" [(activeId)]="defaultNavActiveId" class="nav-tabs">
+  <li [ngbNavItem]="1">
+    <a ngbNavLink>Emisión de Facturas</a>
+    <ng-template ngbNavContent>
+      <div class="">
+        <div class="cuadro" style="text-align: center;" *ngIf="cuadroAlertaCancelacion === true" >
+          <h4 style="margin-top: 140px;">¡INFORMACIÓN IMPORTANTE!</h4>
+          <p style="font-size: 20px;" >"Ha solicitado la cancelación de una factura, sin embargo queremos informar que es probable que no se lleve a cabo, sugerimos realizar la cancelación de cfdi directamente en el portal del SAT, estamos trabajando en la mejora de esta funcionalidad por lo que pedimos una disculpa por el inconveniente"</p>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-sm-7">
+            <form class="form-inline">
+              <div class="form-group hidden">
+                <div >
+                  <input name="datepicker"
+                  
+                         ngbDatepicker
+                         #datepicker="ngbDatepicker"
+                         [autoClose]="'outside'"
+                         (dateSelect)="onDateSelection($event)"
+                         [displayMonths]="2"
+                         [dayTemplate]="t"
+                         outsideDays="hidden"
+                         clearBtn="true"
+                         [startDate]="fromDate!"
+                         tabindex="-1">
+                  <ng-template #t let-date let-focused="focused">
+                    <span class="custom-day"
+                          [class.focused]="focused"
+                          [class.range]="isRange(date)"
+                          [class.faded]="isHovered(date) || isInside(date)"
+                          (mouseenter)="hoveredDate = date"
+                          (mouseleave)="hoveredDate = null">
+                      {{ date.day }}
+                    </span>
+                  </ng-template>
+                </div>
+              </div>
+              <div class="form-group" >
+                <div class="input-group">
+                  <input #dpFromDate
+                         class="form-control" placeholder="dd-mm-yy"
+                         name="dpFromDate"
+                         [value]="formatter.format(fromDateFormat)"
+                         (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-light btn-icon calendar" (click)="datepicker.toggle()" type="button"> <i data-feather="calendar" appFeatherIcon class="text-secondary"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group ">
+                <div class="input-group">
+                  <input #dpToDate
+                         class="form-control" placeholder="dd-mm-yy"
+                         name="dpToDate"
+                         [value]="formatter.format(toDateFormat)"
+                         (input)="toDate = validateInput(toDate, dpToDate.value)">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-light btn-icon calendar" (click)="datepicker.toggle()" type="button"> <i data-feather="calendar" appFeatherIcon class="text-secondary"></i></button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
+          <div class="col">
+            <button type="button" (click)="clear()"  class="btn btn-primary" placement="top" ngbTooltip="Limpiar Fechas" ><i class="feather  icon-x btn-icon-prepend"></i></button>
+          </div>
+          <div class="col ">
+            <form class=" ">
+              <input class="form-control   " type="search" placeholder="Filtrar por Receptor o RFC" aria-label="Search" (keyup)="FilterBy($event)">
+            </form>
+          </div>
+          <div class="col buttonFactura">
+          <button type="button" class="btn btn-secondary btn-lg" *ngIf="tienetimbres" routerLink="/general/nuevafactura">Nueva Factura</button>
+          <span *ngIf="!tienetimbres "> {{alertaMsg}}</span>
+          </div>
+          
+         
+        </div>
+        <div class="row tabla">
+          <div class="col-md-12 stretch-card">
+            <div class="card">
+              <div class="card-body">
+                
+                <div class="table ">
+                  <ngx-datatable
+                  #table
+                  style="height: 530px;"
+                  class="material expandable"
+                  [rows]= "filteredcdfi"
+                  [loadingIndicator]="loadingIndicator"
+                  [columnMode]="ColumnMode.force"
+                  [headerHeight]="50"
+                  [footerHeight]="50"
+                  [rowHeight]="70"
+                  [limit]="25"
+                  [scrollbarH]="true"
+                  [scrollbarV]="true"
+                  [columns]="columnsemi"
+                >
+
+                <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow>
+                  <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                    <div style="padding-left:10px; padding-bottom: 10px; max-height: 100px; overflow-y:auto;">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Clv. del Prod/Serv</th>
+                            <th>No Iden.</th>
+                            <th>Cantidad</th>
+                            <th>Clv. Unidad</th>
+                            <th>Unidad</th>
+                            <th>Descripción</th>
+                            <th>V. Unitario</th>
+                            <th>Descuento</th>
+                            <th>Importe</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let det of row.dat; index as i;" class="table-active">                                          
+                            <td >{{det.clv}}</td>
+                            <td>{{det.noiden}}</td>
+                            <td>{{det.can}}</td>
+                            <td>{{det.clvu}}</td>
+                            <td>{{det.uni}}</td>
+                            <td style="max-width: 150px; white-space: normal;">{{det.desc}}</td>
+                            <td>{{det.vuni}}</td>
+                            <td>{{det.descuento}}</td>
+                            <td>{{det.imp}}</td>                                                                          
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </ng-template>
+                </ngx-datatable-row-detail>
+                <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+                  <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                    <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Expandir/Retraer Registro" (click)="toggleExpandRow(row)">
+                    </a>
+                  </ng-template>
+                </ngx-datatable-column>
+                
+                  <ngx-datatable-column name="Receptor" [width]="240">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <div style="width: 240px; white-space: normal;" title="{{row.receptor}}">
+                        {{row.razonsocial}}
+                      </div>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="RFC" [width]="120">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <div style="max-width: 120px; white-space: normal;" title="{{row.RFC}}">
+                        {{row.rfc}}
+                      </div>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Fecha Emision" [width]="100" >
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <div style="max-width: 80px; white-space: normal;" title="{{row.fechaemision}}">
+                        {{row.fechaemision}}
+                      </div>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="UUID" [width]="150">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <div style="max-width: 150px;  white-space: normal;" title="{{row.uuid}}">
+                        {{row.uuid}}
+                      </div>
+                      
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Estado" [width]="70">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <div style="max-width: 70px;  white-space: normal;" title="{{row.estado}}">
+                        {{row.estado}}
+                      </div>
+                      
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Tipo de Factura" [width]="50">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <div style="max-width: 50px;  white-space: normal;" title="{{row.tipo}}">
+                        {{row.tipo}}
+                      </div>
+                      
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Acciones" [width]="200" 
+                    [sortable]="false" 
+                    [resizeable]="false" 
+                    [draggable]="false">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <button title="Descargar XML" class="btn btn-success btn-icon-text" (click)="downloadFile(row,'nom_')">                        
+                        <i class="feather icon-file-text btn-icon-prepend"></i>
+                      </button>
+                      <button title="Descargar PDF" class="btn btn-warning btn-icon-text" (click)="exportPDFEmitido(row, 'descargar')">
+                        <i class="feather icon-file btn-icon-prepend"></i>
+                      </button>
+                      <button title="Enviar por Correo" class="btn btn-info btn-icon-text" (click)="exportPDFEmitido(row, 'envio')">
+                        <i class="feather  icon-mail btn-icon-prepend"></i>
+                      </button>
+                      <button title="Cancelar " class="btn btn-danger btn-icon-text" *ngIf="row.estado === 'Vigente' " (click)="cancelarFactura(row)">
+                        <i class="feather  icon-x btn-icon-prepend"></i>
+                      </button>
+                    </ng-template>
+                   </ngx-datatable-column>
+                </ngx-datatable>
+                </div> 
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="2">
+    <a ngbNavLink>Relación de Clientes</a>
+    <ng-template ngbNavContent>
+      <div class="">
+        <div class="row">
+          
+        
+          <div class="col-lg-2 ">
+            <form class=" ">
+              <input class="form-control  mr-sm-4 " type="search" placeholder="Filtrar por Razón social" aria-label="Search" (keyup)="filterClientes($event)">
+
+            </form>
+          </div>
+          <div class="col-lg-2 buttonFactura">
+          <button type="button" class="btn btn-secondary btn-lg" (click)="openBasicModal(basicModal,'nuevo')">Agregar Cliente</button>
+          </div>
+          <ng-template #basicModal let-modal>
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Nuevo Cliente</h5>
+              <button type="button" class="close" (click)="cerrarModalClientes()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-12 stretch-card">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <div class="form-group">
+                            <label class="control-label">Razón Social*</label>
+                            <input type="text" class="form-control"  [(ngModel)]="razonsocial" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                        <div class="col-sm-6">
+                          <div class="form-group">
+                            <label class="control-label">RFC*</label>
+                            <input type="text" class="form-control"  [disabled]="rfcblock === true" [(ngModel)]="rfc" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                      </div><!-- Row -->
+
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <div class="form-group">
+                            <label class="control-label">Código Postal</label>
+                            <input type="text" class="form-control" autocomplete="off"  [(ngModel)]="cp" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                      </div>
+
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="form-group">
+                            <label class="control-label">Correo</label>
+                            <input type="email" class="form-control" placeholder="Opcional" [(ngModel)]="correo" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                      </div>
+                      <!-- Button trigger modal -->
+                    <button class="btn btn-primary" *ngIf="nuevocliente" (click)="openXlModal(xlModal,'nuevo')">Agregar Direccion</button>
+                    <button class="btn btn-primary" *ngIf="!nuevocliente" (click)="openXlModal(xlModal,'editar')">Editar Direccion</button>
+                    <!-- Modal -->
+                    <ng-template #xlModal let-modal  >
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Agregar Direccion</h5>
+                        <button type="button" class="close" (click)="modal.close('by: close icon')" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      
+                      <div class="row modalClientes"  > 
+                        <div class="col-sm-5">
+                          <div class="form-group">
+                            <label class="control-label">Telefono</label>
+                            <input type="text" class="form-control"  [(ngModel)]="telefono" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                      </div><!-- Row -->
+                      <div class="row modalClientes">
+                        <div class="col-sm-5">
+                          <div class="form-group">
+                            <label class="control-label">Calle</label>
+                            <input type="text" class="form-control"  [(ngModel)]="calle" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                        <div class="col-sm-3 ">
+                          <div class="form-group">
+                            <label class="control-label">Num.Exterior</label>
+                            <input type="text" class="form-control"  [(ngModel)]="noext" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                        <div class="col-sm-3 ">
+                          <div class="form-group">
+                            <label class="control-label">Num.Interior</label>
+                            <input type="text" class="form-control"  [(ngModel)]="noint" [ngModelOptions]="{standalone: true}">
+                          </div>
+                          
+                        </div><!-- Col -->
+                      </div><!-- Row -->
+                      <div class="row">
+                        <div class="col-sm-5" style="margin-left: 19px;">
+                          <div class="form-group" >
+                            <label class="control-label">Entre Calle</label>
+                            <input type="text" class="form-control"  [(ngModel)]="entrecalle" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                        <div class="col-sm-5" style="margin-right: 4px;">
+                          <div class="form-group" >
+                            <label class="control-label">Y Entre Calle</label>
+                            <input type="text" class="form-control"  [(ngModel)]="ycalle" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                      </div><!-- Row -->
+                      <div class="row">
+                        <div class="col-sm-5" style="margin-left: 19px;">
+                          <div class="form-group">
+                            <label class="control-label ">Colonia</label>
+                            <input type="text" class="form-control"  [(ngModel)]="colonia" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                       
+                      </div><!-- Row -->
+
+                      <div class="row">
+                        <div class="col-sm-5" style="margin-left: 19px;">
+                          <div class="form-group" >
+                            <label class="control-label ">Ciudad</label>
+                            <input type="text" class="form-control"  [(ngModel)]="ciudad" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                        <div class="col-sm-5" style="margin-right: 4px;" >
+                          <div class="form-group">
+                            <label class="control-label">Estado</label>
+                            <input type="text" class="form-control" autocomplete="off"  [(ngModel)]="estado" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div><!-- Col -->
+                      </div><!-- Row -->
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" (click)="modal.close('by: close button')">Ocultar Direccion</button>
+                      </div>
+                    </ng-template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="cerrarModalClientes()" >Cerrar</button>
+              <button type="button" class="btn btn-primary" *ngIf="nuevocliente" (click)=" guardarCliente() ">Guardar</button>
+              <button type="button" class="btn btn-primary" *ngIf="!nuevocliente" (click)=" guardarEdicionCliente(clienteRowIndex)">Guardar</button>
+            </div>
+          </ng-template>
+          <!-- Close result -->
+         
+         
+        </div>
+        <div class="row tabla">
+          <div class="col-md-12 stretch-card">
+            <div class="card">
+              <div class="card-body">
+                
+                <div class="table ">
+                  <ngx-datatable
+
+                  #tablec
+                  style="height: 530px;"
+                  class="material expandable"
+                  [rows]= "clientes"
+                  [loadingIndicator]="loadingIndicator"
+                  [columnMode]="ColumnMode.force"
+                  [headerHeight]="50"
+                  [footerHeight]="50"
+                  [rowHeight]="70"
+                  [limit]="limite"
+                  [scrollbarH]="true"
+                  [scrollbarV]="true"
+                  [columns]="columnsemiRelacion"
+                >
+                  <ngx-datatable-column name="Razón Social" [width]="150">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <div style="max-width: 250px; white-space: normal;" title="{{row.razonsocial}}">
+                        {{row.razonsocial}}
+                      </div>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Correo" [width]="150">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <div style="max-width: 250px; white-space: normal;" title="{{row.razonsocial}}">
+                        {{row.correo}}
+                      </div>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="RFC" [width]="50">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      {{row.rfc}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  
+                  <ngx-datatable-column name="Acción" [width]="150"
+                    [sortable]="false"
+                    [resizeable]="false"
+                    [draggable]="false">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
+                      <button title="Agregar" class="btn btn-success btn-icon-text" (click)="editarCliente(row,'editar',basicModal,rowIndex)"> 
+                        <i class="feather icon-edit-3"></i>
+                      </button>
+                    
+                    </ng-template>
+                  </ngx-datatable-column>
+                </ngx-datatable>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="3">
+    <a ngbNavLink>Productos o Servicios</a>
+    <ng-template ngbNavContent>
+      <div class="">
+        <div class="row">
+          <div class="col-lg-2 ">
+            <form class=" ">
+              <input class="form-control  mr-sm-4 " type="search" placeholder="Filtrar por Producto/Servicio" aria-label="Search" (keyup)="filterProductos($event)" >
+
+            </form>
+          </div>
+          <div class="col-lg-2 buttonFactura">
+            <button type="button" class="btn btn-secondary btn-lg" (click)="openXlModal(xlModal,'nuevo')">Agregar Producto</button>
+            </div>
+          <ng-template #xlModal let-modal>
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Nuevo Producto o Servicio</h5> 
+              <button type="button" class="close" (click)="modal.close('by: close icon')" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-12 stretch-card">
+                  <div class="card">
+                    <div class="card-body">
+                      
+                        
+                         
+                          <div class="row">
+                            <div class="col-sm-12">
+
+                              <div class="form-group">
+                                <label class="control-label">Nombre del Producto/Servicio: </label>
+                                <input type="text" class="form-control"  [(ngModel)]="nombreinterno" [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div><!-- Col -->
+                          </div><!-- Row -->
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <label class="control-label">Descripción*</label>
+                                <input type="text" class="form-control" required maxlength="1000" style="height: 60px;" placeholder="Opcional/Maximo 1000 caracteres" [(ngModel)]="descripcion" [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div><!-- Col -->
+                          </div>
+                          <div class="row">
+                            <div class="col-sm">
+                              <div class="form-group">
+                                <label class="control-label">Precio*</label>
+                                <input type="text" class="form-control" [(ngModel)]="precio" [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div><!-- Col -->
+                            <div class="col-sm">
+                              <div class="form-group">
+                                <label class="control-label">Codigo del SAT*</label> <a href="http://pys.sat.gob.mx/PyS/catPyS.aspx" target="_blank" > catalogo</a>
+                                <input type="text" class="form-control" [(ngModel)]="claveproducto" [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div><!-- Col -->
+                            <div class="col-sm">
+                              <label class="control-label">Unidad</label>
+                      
+                              <ng-select [items]="unidadItems"
+                                bindLabel="name"
+                                bindValue="id"
+                                placeholder="Seleccione o escribe"
+                                [(ngModel)]="unidad">
+                              </ng-select>
+                              
+                              
+                            </div>
+                          </div><!-- Row -->
+                         
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label class="control-label">No. Identificación Interno</label>
+                                <input type="text" class="form-control"  [(ngModel)]="noidentificacion" placeholder="Opcional"  [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div><!-- Col -->
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label class="control-label">Cuenta Predial</label>
+                                <input type="text" class="form-control" autocomplete="off"  placeholder="Opcional"   [(ngModel)]="cuentapredial" [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div><!-- Col -->
+                          </div><!-- Row -->
+
+                          <div class="row">
+                            <div class="col-sm">
+                              <label class="control-label">IVA</label> 
+                              <ng-select [items]="ivaItems"
+                              bindLabel="name"
+                              bindValue="id"
+                              placeholder="Seleccione o escribe"
+                              [(ngModel)]="iva">
+                            </ng-select>
+                              
+                              
+                            </div>
+                            <div class="col-sm">
+                              <label class="control-label">IVA RET</label> 
+                      
+                              <ng-select [items]="ivaretItems"
+                                bindLabel="name"
+                                bindValue="id"
+                                placeholder="Seleccione o escribe"
+                                [(ngModel)]="ivaret">
+                              </ng-select>
+                              
+                              
+                            </div>
+                            <div class="col-sm">
+                              <label class="control-label">ISR</label> 
+                      
+                              <ng-select [items]="isrItems"
+                                bindLabel="name"
+                                bindValue="id"
+                                placeholder="Seleccione o escribe"
+                                [(ngModel)]="isr">
+                              </ng-select>
+                              
+                              
+                            </div>
+                            <div class="col-sm">
+                              <div class="form-group">
+                                <label class="control-label">IEPS</label>
+                                <input type="number" class="form-control" autocomplete="off" min="0" placeholder="Asignar Porcentaje"   [(ngModel)]="ieps" [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div><!-- Col -->
+                          </div><!-- Row -->
+                        
+                
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="cerrarModalProductos()" >Cerrar</button>
+              <button type="button" class="btn btn-primary" *ngIf="nuevoproducto" (click)=" guardarProducto() ">Guardar</button>
+              <button type="button" class="btn btn-primary" *ngIf="!nuevoproducto" (click)=" guardarEdicionProducto(rowIndex) ">Guardar</button>
+            </div>
+          </ng-template>
+        
+        </div>
+        <div class="row tabla">
+          <div class="col-md-12 stretch-card">
+            <div class="card">
+              <div class="card-body">
+                
+                <div class="table ">
+                  <ngx-datatable
+
+                  #tablep
+                  style="height: 530px;"
+                  class="material expandable"
+                  [rows]= "productos"
+                  [loadingIndicator]="loadingIndicator"
+                  [columnMode]="ColumnMode.force"
+                  [headerHeight]="50"
+                  [footerHeight]="50"
+                  [rowHeight]="70"
+                  [limit]="25"
+                  [scrollbarH]="true"
+                  [scrollbarV]="true"
+                  [columns]="columnsemiProductos"
+                >
+
+
+                  <ngx-datatable-column name="Producto/Servicio" [width]="300">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <div style="max-width: 250px; white-space: normal;" title="{{row.receptor}}">
+                        {{row.nombreinterno}}
+                      </div>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Precio Unitario" [width]="150">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      {{row.precio}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="IVA" [width]="150">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      {{row.iva}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Acción" [width]="150"
+                    [sortable]="false"
+                    [resizeable]="false"
+                    [draggable]="false">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
+                      <button title="Agregar" class="btn btn-success btn-icon-text" (click)="editarProducto(row,'editar',xlModal,rowIndex)">
+                        <i class="feather icon-edit-3"></i>
+                      </button>
+                      <button title="Borrar" class="btn btn-danger btn-icon-text" (click)="eliminarProducto(row,rowIndex)">
+                        <i class="feather icon-x"></i>
+                      </button>
+                    </ng-template>
+                  </ngx-datatable-column>
+                </ngx-datatable>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="4">
+    <a ngbNavLink>Recibos Electrónicos de Pago</a>
+    <ng-template ngbNavContent>
+      <div class="cuadro" style="text-align: center;" *ngIf="cuadroAlertaCancelacionRep === true" >
+        <h4 style="margin-top: 140px;">¡INFORMACIÓN IMPORTANTE!</h4>
+        <p style="font-size: 20px;" >"Ha solicitado la cancelación de un pago, sin embargo queremos informar que es probable que no se lleve a cabo, sugerimos realizar la cancelación de cfdi directamente en el portal del SAT, estamos trabajando en la mejora de esta funcionalidad por lo que pedimos una disculpa por el inconveniente"</p>
+      </div>
+      <div class="row">
+        
+          <div class="col-3">
+            <form class="form-inline">
+              <div class="form-group hidden">
+                <div class="input-group">
+                  <input name="datepicker"
+                  style="width: 100px;"
+                         class="form-control"
+                         ngbDatepicker
+                         #datepicker="ngbDatepicker"
+                         [autoClose]="'outside'"
+                         (dateSelect)="onDateSelection2($event)"
+                         [displayMonths]="2"
+                         [dayTemplate]="t"
+                         outsideDays="hidden"
+                         [startDate]="fromDate!"
+                         tabindex="-1">
+                  <ng-template #t let-date let-focused="focused">
+                    <span class="custom-day"
+                          [class.focused]="focused"
+                          [class.range]="isRange(date)"
+                          [class.faded]="isHovered(date) || isInside(date)"
+                          (mouseenter)="hoveredDate = date"
+                          (mouseleave)="hoveredDate = null">
+                      {{ date.day }}
+                    </span>
+                  </ng-template>
+                </div>
+              </div>
+              <div class="form-group" style="width: 183px;" >
+                <div class="input-group">
+                  <input #dpFromDate
+                         class="form-control" placeholder="dd-mm-yy"
+                         name="dpFromDate"
+                         [value]="formatter.format(fromDateFormat)"
+                         (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-light btn-icon calendar" (click)="datepicker.toggle()" type="button"> <i data-feather="calendar" appFeatherIcon class="text-secondary"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group ml-2" style="width: 183px;">
+                <div class="input-group">
+                  <input #dpToDate
+                         class="form-control" placeholder="dd-mm-yy"
+                         name="dpToDate"
+                         [value]="formatter.format(toDateFormat)"
+                         (input)="toDate = validateInput(toDate, dpToDate.value)">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-light btn-icon calendar" (click)="datepicker.toggle()" type="button"> <i data-feather="calendar" appFeatherIcon class="text-secondary"></i></button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="col-2">
+            <button type="button" (click)="clear()"  class="btn btn-primary" ><i class="feather  icon-x btn-icon-prepend"></i></button>
+          </div>
+          <div class="col-2">
+            <form class=" ">
+              <input class="form-control" type="search" placeholder="Filtrar por Folio o Receptor" aria-label="Search" (keyup)="FilterByRep($event)">
+            </form>
+          </div>
+          <div class="col-2 " >
+            <button type="button" class="btn btn-secondary btn-lg"  routerLink="/general/rep" >Nueva REP</button>
+            </div>
+      </div>
+
+     
+        
+
+
+        <div class="row tabla">
+          <div class="col-md-12 stretch-card">
+            <div class="card">
+              <div class="card-body">
+                
+                <div class="table ">
+                  <ngx-datatable
+
+                  #tabler
+                  style="height: 530px;"
+                  class="material expandable"
+                  [rows]= "filteredreps"
+                  [loadingIndicator]="loadingIndicator"
+                  [columnMode]="ColumnMode.force"
+                  [headerHeight]="50"
+                  [footerHeight]="50"
+                  [rowHeight]="70"
+                  [limit]="limite"
+                  [scrollbarH]="true"
+                  [scrollbarV]="true"
+                  [columns]="columnsemiReps"
+                >
+
+                <ngx-datatable-column name="Receptor" [width]="150">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <div style=" white-space: normal;" title="{{row.receptor}}">
+                      {{row.receptor}}
+                    </div>
+                  </ng-template>
+                </ngx-datatable-column>
+                  <ngx-datatable-column name="Folio" [width]="50">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <div style=" white-space: normal;" title="{{row.fechaemision}}">
+                        {{row.folio}}
+                      </div>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Fecha de emisión" [width]="50">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      {{row.fechaemision}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Monto" [width]="50">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      {{row.monto}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Estado" [width]="50">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      {{row.estado}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Acciones" [width]="200" 
+                    [sortable]="false" 
+                    [resizeable]="false" 
+                    [draggable]="false">
+                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                      <button title="Descargar XML" class="btn btn-success btn-icon-text" (click)="downloadFileRep(row,'nom_')">                        
+                        <i class="feather icon-file-text btn-icon-prepend"></i>
+                      </button>
+                      <button title="Descargar PDF" class="btn btn-warning btn-icon-text" (click)="exportPDFEmitidoRep(row, 'descargar')">
+                        <i class="feather icon-file btn-icon-prepend"></i>
+                      </button>
+                      <button title="Enviar por Correo" class="btn btn-info btn-icon-text" (click)="exportPDFEmitidoRep(row, 'envio')">
+                        <i class="feather  icon-mail btn-icon-prepend"></i>
+                      </button>
+                      <button title="Cancelar " class="btn btn-danger btn-icon-text" *ngIf="row.estado === 'Vigente' " (click)="cancelarRep(row)">
+                        <i class="feather  icon-x btn-icon-prepend"></i>
+                      </button>
+                    </ng-template>
+                   </ngx-datatable-column>
+                </ngx-datatable>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+    </ng-template>
+  </li>
+ </ul>
+
+
+
+<div [ngbNavOutlet]="defaultNav" class="border border-top-0 p-3"></div>

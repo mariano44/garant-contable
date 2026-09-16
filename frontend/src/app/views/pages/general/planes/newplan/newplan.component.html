@@ -1,0 +1,73 @@
+<div class="row">
+  <div class="col-xl-10 main-content pl-xl-4 pr-xl-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/general/planes">Planes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nuevo Plan</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<div class="profile-page tx-13">
+    <div class="row profile-body">
+      <!-- middle wrapper start -->
+      <div class="col-md-12 col-xl-12 middle-wrapper">
+        <div class="row">
+          <div class="col-md-12 stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h6 class="card-title"></h6>
+                  <form>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label class="control-label">Nombre del Plan</label>
+                          <input type="text" class="form-control" [(ngModel)]="nombre" [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label class="control-label">Costo</label>
+                          <input type="text" class="form-control" mask="separator.2" thousandSeparator="," [(ngModel)]="costo" [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                    </div>    
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="table-responsive">
+                          <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th class="text-center align-middle">Vista</th>
+                                <th ></th>
+                                <!-- <th ><input type="checkbox" class="form-control" [checked]="checkedCreacion" (click)="checkCreacion($event)"></th>
+                                <th class="text-center align-middle">Creación</th>                                
+                                <th ><input type="checkbox" class="form-control" [checked]="checkedEdicion" (click)="checkEdicion($event)"></th>
+                                <th class="text-center align-middle">Edición</th>                                
+                                <th ><input type="checkbox" class="form-control" [checked]="checkedEliminar" (click)="checkEliminar($event)"></th>
+                                <th class="text-center align-middle">Eliminar</th>                                 -->
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let v of vistas; index as i">
+                                <th class="align-middle text-center">{{permisos[i].vista}}</th>                                
+                                <td class="align-middle"><input type="checkbox" class="form-control" (click)="changeCheck($event,i,'checkedVer')" [checked]="permisos[i].checkedVer" [(ngModel)]="permisos[i].lista" [ngModelOptions]="{standalone: true}"></td>
+                                <!-- <td class="align-middle" colspan="2"><input type="checkbox" class="form-control" [checked]="permisos[i].checkedCrear" [(ngModel)]="permisos[i].creacion" [ngModelOptions]="{standalone: true}"></td>
+                                <td class="align-middle" colspan="2"><input type="checkbox" class="form-control" [checked]="permisos[i].checkedEdit" [(ngModel)]="permisos[i].edicion" [ngModelOptions]="{standalone: true}"></td>
+                                <td class="align-middle" colspan="2"><input type="checkbox" class="form-control" [checked]="permisos[i].checkedDelete" [(ngModel)]="permisos[i].eliminar" [ngModelOptions]="{standalone: true}"></td> -->
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>    
+                  </form>
+                <button type="button" [disabled]="saving" class="btn btn-primary submit" (click)="Guardar()">Guardar</button>
+                <button type="button" class="btn btn-light submit" routerLink="/general/planes">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>
+  </div>

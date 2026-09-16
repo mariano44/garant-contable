@@ -1,0 +1,70 @@
+div.not {
+    color: #535353;
+    padding: 0;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    .indicator {
+    position: absolute;
+    top: 3px;
+    right: 2px;
+    .circle {
+        background: #727cf5;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        &::before {
+            background-color: #727cf5;
+            content: "";
+            display: table;
+            border-radius: 50%;
+            position: absolute;
+            @extend .pulse;
+        }
+    }
+  }
+}
+
+.pulse {
+    $dim : 7px;
+    $mult : 4;
+    @keyframes pulse{
+      0% {
+        opacity: 1;
+        width: $dim;
+        height: $dim;
+        left: 0;
+        top: 0;
+      }
+      
+      95% {
+        opacity: 0.1;
+        left: -(($dim * $mult) - $dim)/2;
+        top: -(($dim * $mult) - $dim)/2;
+        width: $dim * $mult;
+        height: $dim * $mult;
+      }
+      
+      100% {
+        opacity: 0;
+        width: $dim;
+        height: $dim;
+        left: 0;
+        top: 0;
+      }
+    }
+    animation-name: pulse;
+    animation-duration: .9s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;
+  }
+
+.tooltip{
+  z-index: 1050;
+}
+
+:host {
+  ::ng-deep .datatable-row-detail {
+      height: 100% !important;
+  }
+}

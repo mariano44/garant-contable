@@ -1,0 +1,143 @@
+<div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+  <div>
+    <h4 class="mb-3 mb-md-0">Tablero Informativo</h4>
+  </div>
+  <div class="d-flex align-items-center flex-wrap text-nowrap">
+    <!-- <div class="input-group dashboard-date mr-2 mb-2 mb-md-0 d-md-none d-xl-flex">
+      <div class="input-group-prepend">
+        <button class="btn btn-outline-primary btn-icon calendar" type="button" (click)="d.toggle()">
+          <i data-feather="calendar" appFeatherIcon></i>
+        </button>
+      </div>
+      <input class="form-control" placeholder="yyyy-mm-dd"
+          name="dp" [(ngModel)]="currentDate" ngbDatepicker #d="ngbDatepicker">
+    </div> -->
+    <!-- <button type="button" class="btn btn-outline-info btn-icon-text mr-2 d-none d-md-block">
+      <i class="btn-icon-prepend" data-feather="download" appFeatherIcon></i>
+      Import
+    </button>
+    <button type="button" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0">
+      <i class="btn-icon-prepend" data-feather="printer" appFeatherIcon></i>
+      Print
+    </button>
+    <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
+      <i class="btn-icon-prepend" data-feather="download-cloud" appFeatherIcon></i>
+      Download Report
+    </button> -->
+  </div>
+</div>
+
+<div class="profile-page tx-13">
+  <div class="row">
+    <!-- <div class="col-md-6 grid-margin stretch-card" *ngIf="cliente">
+      <div class="card">
+        <div class="card-body" >
+          <h6 class="card-title">Buscar Cliente</h6>
+          <ng-select [items]="clientes"
+            bindLabel="name"
+            bindValue="rfc"
+            notFoundText="No tienes clientes asignados"
+            placeholder="Buscar por Nombre o RFC"
+            [(ngModel)]="selectedSearchPersonId"
+            (change)="changeRFC()">
+          </ng-select>        
+        </div>
+      </div>
+    </div> -->
+    <div class="col-md-3 grid-margin stretch-card" *blockUI="'ejercicioblock'">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12 d-flex align-items-center">
+              <h6 class="card-title">Seleccionar Ejercicio</h6>
+            </div>
+          </div>
+          <ng-select 
+            [items]="ejercicios"
+            [disabled]="ejercicioEnable"
+            notFoundText="No hay ejercicios registrados"
+            bindLabel="anio"
+            bindValue="anio"
+            placeholder="Seleccionar ejercicio"
+            [(ngModel)]="selectedejercicio"
+            (change)="changeEjercicio()">
+          </ng-select>        
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col-md-3 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12 d-flex align-items-center" >
+              <h6 class="card-title">Seleccionar Periodo</h6>
+            </div>
+          </div>
+          <ng-select 
+            [items]="periodos"
+            [disabled]="periodosEnable"
+            notFoundText="No hay periodos registrados"
+            bindLabel="mes"
+            bindValue="periodo"
+            placeholder="Seleccionar Periodo"
+            [(ngModel)]="selectedperiodo"
+            (change)="changePeriodos()">
+          </ng-select>        
+        </div>
+      </div>
+    </div> -->
+  </div>
+  
+  <div class="row" *blockUI="'historicoporejercicio'">
+    <div class="col-md-12 grid-margin">
+      <div class="card rounded">
+        <div class="card-header">
+          <div class="col-md-6 col-xl-6 middle-wrapper">
+            Comportamiento Histórico
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="col-md-12">
+            <p class="text-muted tx-13 mb-3 mb-md-0">Las cantidades mostradas son el resultado de los ingresos y egresos del ejercicio y/o periodo seleccionado sin impuesto.</p>
+          </div>
+          <canvas baseChart         
+            height="80"
+            [datasets]="mixedChartData"
+            [labels]="mixedChartLabels"
+            [colors]="mixedChartColors"
+            [chartType]="mixedChartType"
+            [options]="mixedChartOptions">
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *blockUI="'rubrosporejercicio'">
+    <div class="col-xl-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="col-md-12 col-xl-12 middle-wrapper">
+              <h6 class="card-title">Gastos por rubros</h6>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <p class="text-muted tx-13 mb-3 mb-md-0">Las cantidades mostradas son el resultado de los ingresos y egresos del ejercicio sin impuesto.</p>
+              </div>
+            </div>
+          </div>
+          <apx-chart
+            [series]="donutChartOptions.nonAxisSeries"
+            [labels]="donutChartOptions.labels"
+            [chart]="donutChartOptions.chart"
+            [colors]="donutChartOptions.colors"
+            [stroke]="donutChartOptions.stroke"
+            [legend]="donutChartOptions.legend"
+            [dataLabels]="donutChartOptions.dataLabels"
+            [tooltip]="donutChartOptions.tooltip"
+          ></apx-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="row w-100 mx-0 auth-page">
+    <div class="col-md-8 col-xl-6 mx-auto">
+      <div class="card">
+        <div class="row">
+          <div class="col-md-4 pr-md-0">
+            <div class="auth-left-wrapper">  
+            </div>
+          </div>
+          <div class="col-md-8 pl-md-0">
+            <div class="auth-form-wrapper px-4 py-5">
+              <a routerLink="." class="noble-ui-logo d-block mb-2">Garant <span>Contable</span></a>
+              <h5 class="text-muted font-weight-normal mb-4">Ingresar contraseña nueva</h5>
+              <form class="forms-sample">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Contraseña</label>
+                  <input type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" class="form-control" id="exampleInputPassword1" autocomplete="current-password" placeholder="Contraseña">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword2">Confirmar Contraseña</label>
+                  <input type="password" (change)="RevisarPass()" [(ngModel)]="cpassword" [ngModelOptions]="{standalone: true}" class="form-control" id="exampleInputPassword2" autocomplete="current-password" placeholder="Confirmar Contraseña">
+                </div>
+                <div class="mt-3">
+                  <button type="submit" class="btn btn-primary mr-2 mb-2 mb-md-0" (click)="cambiar($event)">Cambiar Contraseña</button>                
+                </div>
+                <a routerLink="/auth/login" class="d-block mt-3 text-muted">Ir al Login</a>                
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

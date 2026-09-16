@@ -1,0 +1,375 @@
+<div class="row">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">Clasificar Rubros</li>
+    </ol>
+  </nav>
+</div>
+<div class="row">
+  <!-- <div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title">Buscar Cliente</h6>
+        <ng-select [items]="clientes"
+          bindLabel="name"
+          bindValue="rfc"
+          notFoundText="No tienes clientes asignados"
+          placeholder="Buscar por Nombre o RFC"
+          [(ngModel)]="selectedSearchPersonId"
+          (change)="changeRFC()">
+        </ng-select>        
+      </div>
+    </div>
+  </div> -->
+  <div class="col-md-3 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-9 d-flex align-items-center">
+            <h6 class="card-title">Ejercicio: </h6>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-9 d-flex align-items-center">
+            <!-- <h4>{{ejercicio}}</h4> -->
+            <ng-select 
+              [items]="ejercicios"
+              [disabled]="ejercicioEnable"
+              notFoundText="No hay ejercicios registrados"
+              bindLabel="anio"
+              bindValue="anio"
+              placeholder="Seleccionar ejercicio"
+              [(ngModel)]="ejercicio"
+              (change)="changeEjercicio()"
+              style="width: 150px !important;">
+            </ng-select>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-9 d-flex align-items-center" >
+            <h6 class="card-title">Periodo Activo:</h6>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-9 d-flex align-items-center">
+            <!-- <h4>{{periodo}}</h4> -->
+            <ng-select 
+              [items]="periodos"
+              [disabled]="periodosEnable"
+              notFoundText="No hay periodos registrados"
+              bindLabel="mes"
+              bindValue="periodo"
+              placeholder="Seleccionar Periodo"
+              [(ngModel)]="p"
+              (change)="changePeriodos()"
+              style="width: 200px !important;">
+            </ng-select>         
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<div class="header-links" *blockUI="'block-item'">
+  <ul ngbNav #defaultNav="ngbNav" [(activeId)]="defaultNavActiveId" class="nav-tabs links d-flex align-items-center mt-3 mt-md-0">
+    <li [ngbNavItem]="1" class="header-link-item d-flex align-items-center active">
+      <a ngbNavLink class="pt-1px d-none d-md-block">Pendientes</a>
+      <ng-template ngbNavContent>
+        <div class="row">
+          <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-header">
+                Lista de CFDIs pendientes de clasificar
+                <button type="button" (click)="saveRubros()" class="btn btn-success btn-icon" *ngIf="showSaveButton" style="float: right;">
+                  <i class="feather icon-check-square"> Clasificar Rubros</i>
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive pt-3" *ngIf="sihay">
+                  <ngx-datatable
+                    #table
+                    class="material expandable"
+                    [rows]="Pendientes"
+                    [loadingIndicator]="loadingIndicator"
+                    [columnMode]="ColumnMode.force"
+                    [headerHeight]="50"
+                    [footerHeight]="50"
+                    [limit]="20"
+                    [scrollbarH]="true"
+                    [columns]="columns"
+                    rowHeight="auto"
+                    [rowClass]="getRowClass"  
+                    >
+                    <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow>
+                      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                        <div style="padding-left:10px; padding-bottom: 10px; max-height: 100px; overflow-y:auto;">
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th>Clv. del Prod/Serv</th>
+                                <th>No Iden.</th>
+                                <th>Cantidad</th>
+                                <th>Clv. Unidad</th>
+                                <th>Unidad</th>
+                                <th>Descripción</th>
+                                <th>V. Unitario</th>
+                                <th>Descuento</th>
+                                <th>Importe</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let det of row.det; index as i;" class="table-active">                                          
+                                <td>{{det.clv}}</td>
+                                <td>{{det.noiden}}</td>
+                                <td>{{det.can}}</td>
+                                <td>{{det.clvu}}</td>
+                                <td>{{det.uni}}</td>
+                                <td style="max-width: 150px; white-space: normal;">{{det.desc}}</td>
+                                <td>{{det.vuni}}</td>
+                                <td>{{det.descuento}}</td>
+                                <td>{{det.imp}}</td>                                                                          
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </ng-template>
+                    </ngx-datatable-row-detail>
+                    <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+                      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                        <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Expandir/Retraer Registro" (click)="toggleExpandRow(row)">
+                        </a>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Emisor" [width]="150" prop="emisor" style="white-space:normal;"></ngx-datatable-column>
+                    <ngx-datatable-column name="Rfc" [width]="100" prop="rfc"></ngx-datatable-column>
+                    <ngx-datatable-column name="Fecha" [width]="60" prop="fecha"></ngx-datatable-column>
+                    <ngx-datatable-column name="Estado" [width]="50" prop="estado"></ngx-datatable-column>
+                    <ngx-datatable-column name="Total" [width]="40" prop="total" >
+                      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                        <div class="text-right col-lg-12 pr-4">
+                          {{row.total}}
+                        </div>
+                      </ng-template>
+                    </ngx-datatable-column>            
+                    <ngx-datatable-column name="Rubros" [width]="150" style="display: flex !important; align-items: top;">
+                      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                        <ng-select 
+                          [items]="row.rubros"
+                          bindLabel="name"
+                          bindValue="name"
+                          placeholder="Buscar por nombre de rubro"
+                          [(ngModel)]="row.rubro"
+                          appendTo="body">
+                        </ng-select>                
+                      </ng-template>
+                    </ngx-datatable-column>  
+                  </ngx-datatable>
+                </div>
+                <div class="table-responsive pt-3" *ngIf="!sihay">
+                  <ngx-datatable
+                    #table
+                    class="material"
+                    [rows]="Pendientes"
+                    [loadingIndicator]="loadingIndicator"
+                    [columnMode]="ColumnMode.force"
+                    [headerHeight]="50"
+                    [footerHeight]="50"
+                    [limit]="20"
+                    [scrollbarH]="true"
+                    [columns]="columns"
+                    rowHeight="auto"
+                    [rowClass]="getRowClass"  
+                    >
+                    <ngx-datatable-column name="Emisor" [width]="150" prop="emisor" style="white-space:normal;"></ngx-datatable-column>
+                    <ngx-datatable-column name="Rfc" [width]="100" prop="rfc"></ngx-datatable-column>
+                    <ngx-datatable-column name="Fecha" [width]="60" prop="fecha"></ngx-datatable-column>
+                    <ngx-datatable-column name="Estado" [width]="50" prop="estado"></ngx-datatable-column>
+                    <ngx-datatable-column name="Total" [width]="40" prop="total" >
+                    </ngx-datatable-column> 
+                    <ngx-datatable-footer>
+                      <ng-template
+                        ngx-datatable-footer-template
+                        let-rowCount="0"
+                        let-pageSize="0"
+                        let-selectedCount="0"
+                        let-curPage="0"
+                        let-offset="0"
+                      >
+                        <div class="col-lg-12 d-flex justify-content-center" >
+                          <h4><i class="feather icon-alert-triangle"></i><span style="color: #7dd6f6;"> NO EXISTEN CFDI'S PENDIENTES DE CLASIFICAR</span></h4>                          
+                        </div>
+                      </ng-template>
+                    </ngx-datatable-footer>                  
+                  </ngx-datatable>
+                </div>
+              </div>
+            </div>
+          </div> <!-- col -->
+        </div>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="2" class="header-link-item d-flex align-items-center active">
+      <a ngbNavLink class="pt-1px d-none d-md-block">Clasificados</a>
+      <ng-template ngbNavContent>
+        <div class="row">
+          <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-header">
+                Lista de CFDIs clasificados
+                <button type="button" (click)="habiliitarEdicionRubros()" class="btn btn-primary btn-icon" *ngIf="showEditButton" style="float: right;">
+                  <i class="feather icon-check-square"> Modificar Rubros</i>
+                </button>
+                <button type="button" (click)="actRubros()" class="btn btn-success btn-icon" *ngIf="showSaveButtonClasificar" style="float: right;">
+                  <i class="feather icon-check"> Actualizar Rubros</i>
+                </button>
+                <button type="button" (click)="CancelActRubros()" class="btn btn-danger btn-icon" *ngIf="showSaveButtonClasificar" style="float: right;">
+                  <i class="feather icon-x-square"> Cancelar Edición</i>
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive pt-3" *ngIf="sihayc">
+                  <ngx-datatable
+                    #tablec
+                    class="material expandable"
+                    [rows]="Clasificados"
+                    [loadingIndicator]="loadingIndicator"
+                    [columnMode]="ColumnMode.force"
+                    [headerHeight]="50"
+                    [footerHeight]="50"
+                    [limit]="25"
+                    [scrollbarH]="true"
+                    [columns]="columnsc"
+                    [rowHeight]="getRowHeight"
+                    [rowClass]="getRowClass"  
+                    >
+                    <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow>
+                      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                        <div style="padding-left:10px; padding-bottom: 10px; max-height: 100px; overflow-y:auto;">
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th>Clv. del Prod/Serv</th>
+                                <th>No Iden.</th>
+                                <th>Cantidad</th>
+                                <th>Clv. Unidad</th>
+                                <th>Unidad</th>
+                                <th>Descripción</th>
+                                <th>V. Unitario</th>
+                                <th>Descuento</th>
+                                <th>Importe</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let det of row.det; index as i;" class="table-active">                                          
+                                <td>{{det.clv}}</td>
+                                <td>{{det.noiden}}</td>
+                                <td>{{det.can}}</td>
+                                <td>{{det.clvu}}</td>
+                                <td>{{det.uni}}</td>
+                                <td style="max-width: 150px; white-space: normal;">{{det.desc}}</td>
+                                <td>{{det.vuni}}</td>
+                                <td>{{det.descuento}}</td>
+                                <td>{{det.imp}}</td>                                                                          
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </ng-template>
+                    </ngx-datatable-row-detail>
+                    <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+                      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                        <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Expandir/Retraer Registro" (click)="toggleExpandRow2(row)">
+                        </a>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Emisor/Empleado" [width]="150" >
+                      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                        <div style="max-width: 150px; white-space: normal;" title="{{row.cliente}}">
+                          {{row.cliente}}
+                        </div>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Rfc" [width]="100" prop="rfc"></ngx-datatable-column>
+                    <ngx-datatable-column name="Fecha" [width]="60" prop="fecha"></ngx-datatable-column>
+                    <ngx-datatable-column name="Estado" [width]="50" prop="estado"></ngx-datatable-column>
+                    <ngx-datatable-column name="Total" [width]="40" prop="total" >
+                      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                        <div class="text-right col-lg-12 pr-4">
+                          {{row.total}}
+                        </div>
+                      </ng-template>
+                    </ngx-datatable-column>            
+                    <ngx-datatable-column name="Rubros" [width]="150" style="display: flex !important; align-items: top;">
+                      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                        <span *ngIf="showSolospan">
+                          {{row.rubro}}
+                        </span>
+                        
+                        <ng-select 
+                          [items]="row.rubros"
+                          bindLabel="name"
+                          bindValue="name"
+                          placeholder="Buscar por nombre de rubro"
+                          [(ngModel)]="row.rubro"
+                          appendTo="body"
+                          *ngIf="!showSolospan"
+                          [disabled]="EnableSoloSpan">
+                        </ng-select>  
+                      </ng-template>
+                    </ngx-datatable-column>  
+                  </ngx-datatable>
+                </div>
+                <div class="table-responsive pt-3" *ngIf="!sihayc">
+                  <ngx-datatable
+                    #tablec
+                    class="material"
+                    [rows]="Clasificados"
+                    [loadingIndicator]="loadingIndicator"
+                    [columnMode]="ColumnMode.force"
+                    [headerHeight]="50"
+                    [footerHeight]="50"
+                    [limit]="25"
+                    [scrollbarH]="true"
+                    [columns]="columnsc"
+                    [rowHeight]="getRowHeight"
+                    [rowClass]="getRowClass"  
+                    >
+                    <ngx-datatable-column name="Emisor/Empleado" [width]="150" prop="cliente" style="white-space:normal;"></ngx-datatable-column>
+                    <ngx-datatable-column name="Rfc" [width]="100" prop="rfc"></ngx-datatable-column>
+                    <ngx-datatable-column name="Fecha" [width]="60" prop="fecha"></ngx-datatable-column>
+                    <ngx-datatable-column name="Estado" [width]="50" prop="estado"></ngx-datatable-column>
+                    <ngx-datatable-column name="Total" [width]="40" prop="total" >
+                    </ngx-datatable-column> 
+                    <ngx-datatable-footer>
+                      <ng-template
+                        ngx-datatable-footer-template
+                        let-rowCount="0"
+                        let-pageSize="0"
+                        let-selectedCount="0"
+                        let-curPage="0"
+                        let-offset="0"
+                      >
+                        <div class="col-lg-12 d-flex justify-content-center" >
+                          <h4><i class="feather icon-alert-triangle"></i><span style="color: #7dd6f6;"> NO EXISTEN CFDI'S CLASIFICADOS</span></h4>                          
+                        </div>
+                      </ng-template>
+                    </ngx-datatable-footer>                  
+                  </ngx-datatable>
+                </div>
+              </div>
+            </div>
+          </div> <!-- col -->
+        </div>
+      </ng-template>
+    </li>
+  </ul>  
+  <div [ngbNavOutlet]="defaultNav" class="mt-3"></div>    
+</div>

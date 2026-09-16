@@ -1,0 +1,33 @@
+<div class="row w-100 mx-0 auth-page">
+  <div class="col-md-8 col-xl-6 mx-auto">
+    <div class="card">
+      <div class="row">
+        <div class="col-md-4 pr-md-0">
+          <div class="auth-left-wrapper">  
+          </div>
+        </div>
+        <div class="col-md-8 pl-md-0">
+          <div class="auth-form-wrapper px-4 py-5">
+            <div class="text-center mb-3">
+              <img src="../../../../../assets/images/garantlogo.png" />
+            </div>
+            <!-- <a routerLink="." class="noble-ui-logo d-block mb-2">Garant <span>Contable</span></a> -->
+            <p class="font-weight-normal mb-4 text-center">Captura el correo electrónico que tienes
+              registrado en Garant Contable, enviaremos
+              un enlace para restablecer tu contraseña.</p>
+            <form class="forms-sample">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Correo Electrónico</label>
+              <input type="email" [(ngModel)]="correo" (keyup.enter)="cambiar($event)" [ngModelOptions]="{standalone: true}" class="form-control" id="exampleInputEmail1" placeholder="ejemplo@dominio.com" value="">
+            </div>
+              <div class="mt-3">
+                <button type="submit" [disabled]="blockbutton" class="btn btn-primary mr-2 mb-2 mb-md-0" (click)="cambiar($event)">Cambiar Contraseña</button>                
+              </div>
+              <a routerLink="/auth/login" class="d-block mt-3 text-muted">Cancelar</a>          
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

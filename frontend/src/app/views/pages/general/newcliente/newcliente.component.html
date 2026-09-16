@@ -1,0 +1,104 @@
+<div class="row w-80 mx-0 auth-page" >
+    <div class="col-md-8 col-xl-6 mx-auto">
+      <div class="card">
+        <div class="row">
+         
+          <div class="col-md-8 pl-md-0" style=" left: 100px;">
+            <div class="auth-form-wrapper px-4 py-2"   > 
+              <!-- <h5 class="text-muted font-weight-normal mb-4">Crear un usuario es completamente gratis.</h5> -->
+              <form class="forms-sample" >
+                <div class="row mb-0">
+                  <div class="col-sm-12">
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                      <label for="nombres" class="mb-0">Nombres</label>
+                      <input id="nombres" type="text" [(ngModel)]="nombres" [ngModelOptions]="{standalone: true}" class="mb-0 form-control {{vnombres}}" placeholder="Ingresar nombres">
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-0">
+                  <div class="col-sm-12">
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                      <label for="apellidos" class="mb-0" >Apellidos</label>
+                      <input type="text" id="apellidos" [(ngModel)]="apellidos" [ngModelOptions]="{standalone: true}" class="mb-0 form-control {{vapellidos}}" placeholder="Ingresar Apellidos">
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-0">
+                  <div class="col-sm-12">
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                      <label for="razonsocial" class="mb-0">Razón Social (Si aplica)</label>
+                      <input type="text" id="razonsocial" [(ngModel)]="razonsocial" [ngModelOptions]="{standalone: true}" class="mb-0 form-control {{vrazonsocial}}" placeholder="Razón Social">
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-0">
+                  <div class="col-sm-12">
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                      <label for="rfc" class="mb-0">Rfc</label>
+                      <input type="text" id="rfc" [(ngModel)]="rfc" [ngModelOptions]="{standalone: true}" class="mb-0 form-control {{vrfc}} " placeholder="RFC">
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-0">
+                  <div class="col-sm-12">
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                      <label for="exampleInputEmail1" class="mb-0" >Correo</label>
+                      <input type="email" id="exampleInputEmail1" [(ngModel)]="correo" [ngModelOptions]="{standalone: true}" class="mb-0 form-control {{vemail}}" placeholder="ejemplo@dominio.com">
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-0">
+                  <div class="col-sm-6">
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                      <label for="telefono" class="mb-0">Teléfono Fijo</label>
+                      <input type="text" id="telefono" [(ngModel)]="telefono" mask="(000) 000 00 00" [showMaskTyped] = "true"  [ngModelOptions]="{standalone: true}" class="mb-0 form-control">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                      <label for="movil" class="mb-0">Teléfono Móvil</label>
+                      <input type="text" id="movil" [(ngModel)]="movil" mask="(000) 000 00 00" [showMaskTyped] = "true" [ngModelOptions]="{standalone: true}" class="mb-0 form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-0">
+                  <div class="col-sm-12">
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                      <label for="regimen" class="mb-0">Seleccione su régimen fiscal</label>
+                      <select id="regimen" class="form-control mb-0" [(ngModel)]="regimen" [ngModelOptions]="{standalone: true}">
+                        <option value="No se mi régimen fiscal">No se mi régimen fiscal</option>
+                        <option value="Persona física con actividad empresarial o profesional">Persona física con actividad empresarial o profesional</option>
+                        <option value="Régimen de incorporación fiscal">Régimen de incorporación fiscal</option>
+                        <option value="Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas">Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas</option>
+                        <option value="Arrendamiento">Arrendamiento</option>
+                        <option value="Persona Moral">Persona Moral</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div class="form-group">
+                  <label for="exampleInputPassword1">Contraseña</label>
+                  <input type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" class="form-control" id="exampleInputPassword1" autocomplete="current-password" placeholder="Contraseña">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword2">Confirmar Contraseña</label>
+                  <input type="password" (change)="RevisarPass()" [(ngModel)]="cpassword" [ngModelOptions]="{standalone: true}" class="form-control" id="exampleInputPassword2" autocomplete="current-password" placeholder="Confirmar Contraseña">
+                </div> -->
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary mr-2 mb-2 mb-md-0 btn-md" (click)="onRegister($event)" >Crear cuenta</button>                
+                </div>
+                <div class="form-check form-check-flat form-check-primary">
+                  <label class="form-check-label" >
+                    <input type="checkbox" [checked]="terminos" class="form-check-input {{vterminos}}" (click)="checkTerminos($event)">
+                    <i class="input-frame"></i>
+                    Acepto el <a href="#" target="_blank">AVISO DE PRIVACIDAD</a> y los <a href="#" target="_blank">TÉRMINOS Y CONDICIONES</a>
+                  </label>
+                </div>
+                <!-- <a routerLink="/auth/login" class="d-block mt-3 text-muted">¿Ya cuentas con usuario? Ingresa!</a> -->
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,35 @@
+# Dependencias
+backend/vendor/
+frontend/node_modules/
+frontend/dist/
+
+# Configuracion con secretos. Nunca versionar: el .env trae la contrasena de
+# la base, el JWT_SECRET y las credenciales del PAC y de PayPal.
+.env
+.env.*
+!.env.example
+*.env
+
+# Credenciales fiscales de los contribuyentes (CSD y FIEL).
+# Son llaves privadas reales: fuera del repositorio, siempre.
+backend/public/Sellos/
+*.key
+*.cer
+*.pem
+*.pfx
+
+# Ejecucion
+backend/storage/logs/*.log
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/bootstrap/cache/*.php
+backend/.phpunit.result.cache
+
+# Editor y sistema
+.idea/
+.vscode/
+*.sublime-*
+.DS_Store
+Thumbs.db
+desktop.ini

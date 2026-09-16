@@ -1,0 +1,82 @@
+<div class="row">
+  <div class="col-xl-10 main-content pl-xl-4 pr-xl-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/general/roles">Roles</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nuevo Rol</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<div class="profile-page tx-13">
+    <!-- <div class="row">
+      <div class="col-12 grid-margin">
+        <div class="profile-header">
+            NUEVO ROL
+        </div>
+      </div>
+    </div> -->
+    <div class="row profile-body" *blockUI="'block-item'">
+      <!-- middle wrapper start -->
+      <div class="col-md-12 col-xl-12 middle-wrapper">
+        <div class="row">
+          <div class="col-md-12 stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h6 class="card-title"></h6>
+                  <form>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label class="control-label">Nombre del Rol</label>
+                          <input type="text" class="form-control" [(ngModel)]="nombre" [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label class="control-label">Descripción</label>
+                          <input type="text" class="form-control" [(ngModel)]="descripcion" [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div><!-- Col -->
+                    </div>    
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="table-responsive">
+                          <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th class="text-center align-middle" colspan="2">Vista</th>
+                                <th ><input type="checkbox" class="form-control" [checked]="checkedVer" (click)="checkVer($event)"></th>
+                                <th class="text-center align-middle">Ver</th>                                
+                                <th ><input type="checkbox" class="form-control" [checked]="checkedCreacion" (click)="checkCreacion($event)"></th>
+                                <th class="text-center align-middle">Creación</th>                                
+                                <th ><input type="checkbox" class="form-control" [checked]="checkedEdicion" (click)="checkEdicion($event)"></th>
+                                <th class="text-center align-middle">Edición</th>                                
+                                <th ><input type="checkbox" class="form-control" [checked]="checkedEliminar" (click)="checkEliminar($event)"></th>
+                                <th class="text-center align-middle">Eliminar</th>                                
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let v of vistas; index as i">
+                                <th class="align-middle text-center">{{permisos[i].vista}}</th>
+                                <th class="align-middle"><input type="checkbox" class="form-control" [checked]="true" (click)="checkVista(i,$event)"></th>
+                                <td class="align-middle" colspan="2"><input type="checkbox" class="form-control" [checked]="permisos[i].checkedVer" [(ngModel)]="permisos[i].lista" [ngModelOptions]="{standalone: true}"></td>
+                                <td class="align-middle" colspan="2"><input type="checkbox" class="form-control" [checked]="permisos[i].checkedCrear" [(ngModel)]="permisos[i].creacion" [ngModelOptions]="{standalone: true}"></td>
+                                <td class="align-middle" colspan="2"><input type="checkbox" class="form-control" [checked]="permisos[i].checkedEdit" [(ngModel)]="permisos[i].edicion" [ngModelOptions]="{standalone: true}"></td>
+                                <td class="align-middle" colspan="2"><input type="checkbox" class="form-control" [checked]="permisos[i].checkedDelete" [(ngModel)]="permisos[i].eliminar" [ngModelOptions]="{standalone: true}"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>    
+                  </form>
+                <button type="button" [disabled]="saving" class="btn btn-primary submit" (click)="Guardar()">Guardar</button>
+                <button type="button" class="btn btn-light submit" routerLink="/general/roles">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>
+  </div>

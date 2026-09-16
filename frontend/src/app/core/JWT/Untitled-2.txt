@@ -1,0 +1,22 @@
+Cliente:
+Plata - Oro - Platino
+
+Roles para Administradores:
+    Junior:  -> aux. contable
+    plata, oro, platino
+    Senior: -> supervisor
+//----------------
+
+Se establece que el cliente, por falta de pago, no podrá realizar acciones pero podrá ver sus movimientos dentro de la aplicación.
+Pasado los 60 días sin haber realizado el pago, se desactiva el usuario. Se le notificará por correo el bloqueo de la aplicación.
+90 días, se elimina la cuenta.
+
+Candado Por RFC para evitar varios registros de correo
+
+Pasos: 
+1.- tener constancia del RFC para ver que obligaciones tiene.
+2.- Obtener una opinion de cumplimiento.
+3.- descargar sus ultimas declaraciones
+4.- comparar xml declarados con descargados.
+
+

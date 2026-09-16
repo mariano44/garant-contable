@@ -1,0 +1,408 @@
+<div class="row">
+  <div class="col-xl-10 main-content pl-xl-4 pr-xl-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item" *ngIf="hideifcontador || LowRols"><a routerLink="/general/users">Usuarios</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Perfil de Cliente</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<div class="profile-page tx-13">
+  <div class="row">
+    <div class="col-12 grid-margin">
+      <div class="profile-header">
+        <div class="cover">
+          <div class="gray-shade"></div>
+          <figure>
+            <img src="../../../../../assets/images/{{cover}}.jpg" class="img-fluid" alt="profile cover">
+          </figure>
+          <div class="cover-body d-flex justify-content-between align-items-center">
+            <div>
+              <img ngbTooltip="Sube imágenes de 100X100 pixeles" id="profileimage" (mouseover)="showEditPic()" (mouseleave)="hideEditPic()" class="profile-pic" style="cursor: pointer;" src="{{fotoperfil}}" alt="profile" (click)="openFileBrowser($event)" >
+              <div class="col-xs-4"  *ngIf="showEditIcon" style="position:absolute; left:10%;">
+                <i class="mr-1 icon-md" data-feather="camera" appFeatherIcon style="color: grey;" (click)="openFileBrowser($event)">
+                </i>
+                <input (change)="handleFileInput($event)" style="display:none" accept="image/png, image/jpeg" type="file" name="img" class="file-upload-default" id="fileUploadInputExample">
+              </div>
+              <div style="position:absolute;">
+                <button (click)="GuardarFotoPerfil()" type="button" *ngIf="isUploaded" class="btn btn-success btn-xs"><i class="mr-1 icon-md" data-feather="save" appFeatherIcon></i></button>
+                <button (click)="CancelarFotoPerfil()" type="button" *ngIf="isUploaded" class="btn btn-danger btn-xs"><i class="mr-1 icon-md" data-feather="x" appFeatherIcon></i></button>
+              </div>
+              <span class="profile-name">{{nombres}} {{apellidos}}</span>
+            </div>              
+            <!--<div class="d-none d-md-block">
+              <button type="button" *ngIf="isOn" class="btn btn-primary submit" (click)="GuardarP()">Guardar</button>
+              <button type="button" *ngIf="isOn" class="btn btn-light submit" (click)="CancelarP()">Cancelar</button>
+              <button *ngIf="!isOn" class="btn btn-primary btn-icon-text btn-edit-profile" (click)="Editar()">
+                <i data-feather="edit" appFeatherIcon class="btn-icon-prepend"></i> Editar perfil
+              </button>
+            </div>-->
+          </div>
+        </div>
+        <div class="header-links">
+          <ul class="links d-flex align-items-center mt-3 mt-md-0">
+            <li class="header-link-item d-flex align-items-center active">
+              <i class="mr-1 icon-md" data-feather="columns" appFeatherIcon></i>
+              <a class="pt-1px d-none d-md-block" routerLink="/general/perfil/{{id}}">Generales</a>
+            </li>
+            <li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center" *ngIf="!hideifcontador">
+              <i class="mr-1 icon-md" data-feather="user" appFeatherIcon></i>
+              <a class="pt-1px d-none d-md-block" routerLink="/general/sellos/{{id}}">Sellos</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row profile-body">
+    <!-- left wrapper start -->
+    <div class="d-none d-md-block col-md-4 col-xl-3 left-wrapper">
+      <div class="card rounded">
+        <div class="card-body">
+          <div class="mt-3">
+            <label class="tx-11 font-weight-bold mb-0 text-uppercase">Usuario:</label>
+            <p class="text-muted">{{correo}}</p>
+          </div> 
+          <div class="mt-3">
+            <label class="tx-11 font-weight-bold mb-0 text-uppercase">Registro desde:</label>
+            <p class="text-muted">{{registro}}</p>
+          </div>
+          <div class="mt-3" *ngIf="!hideifcontador" (mouseover)="showEditPlan()" (mouseleave)="hideEditPlan()">
+            <label class="tx-11 font-weight-bold mb-0 text-uppercase">Mi Plan: 
+              <button (click)="ActivarSelectPlan()" *ngIf="showEditplanButton" type="button" class="btn btn-secondary-outline btn-xs"><i class="feather icon-edit-3"></i></button>
+            </label>
+            <p class="text-muted" *ngIf="showplanname">{{plan}}</p>              
+          </div>
+          <div class="mt-3" *ngIf="showplanselect">
+            <select class="form-control" [(ngModel)]="planid" [ngModelOptions]="{standalone: true}">
+              <option *ngFor="let plane of planes"  value="{{plane.id}}">{{plane.nombre}}</option>
+            </select>
+            <button (click)="CambiarPlan()" type="button" class="btn btn-success btn-xs m-1"><i class="feather icon-save"></i></button>
+            <button (click)="CancelCambiarPlan()" type="button" class="btn btn-danger btn-xs m-1"><i class="feather icon-x"></i></button>
+          </div>
+          
+          <div class="mt-3" *ngIf="hideifcontador" (mouseover)="showEditRol()" (mouseleave)="hideEditRol()">
+            <label class="tx-11 font-weight-bold mb-0 text-uppercase">Rol: 
+              <button (click)="ActivarSelectRol()" type="button" *ngIf="showEditrolButton" class="btn btn-secondary-outline btn-xs"><i class="feather icon-edit-3"></i></button>
+            </label>
+            <p class="text-muted" *ngIf="showrolname">{{rol}}</p>
+          </div>
+          <div class="mt-3" *ngIf="showrolselect">
+            <select *ngIf="showrolselect" class="form-control" [(ngModel)]="rolid" [ngModelOptions]="{standalone: true}">
+              <option *ngFor="let role of roles"  value="{{role.id}}">{{role.nombre}}</option>
+            </select>
+            <button (click)="CambiarRol()" type="button" *ngIf="showrolselect" class="btn btn-success btn-xs m-1"><i class="feather icon-save"></i></button>
+            <button (click)="CancelCambiarRol()" type="button" *ngIf="showrolselect" class="btn btn-danger btn-xs m-1"><i class="feather icon-x"></i></button>
+          </div>
+
+          <div *ngIf="tipo === 'cliente'">
+          <div class="row" style="margin-top: 5px;"> <!--AGREGADO FACTURACION A EL PERFIL DEL CLIENTE-->
+            <div class="col-1">
+              <i class="feather icon-info" style="width: 14px; height: 14px;" placement="top" ngbTooltip="Activa aquí el módulo de facturación a los clientes que han realizado el pago correspondiente"></i>
+            </div>
+            <div class="col-5" >
+              <p class="tx-11 font-weight-bold mb-0 text-uppercase"  >FACTURACIÓN</p> 
+            </div>
+            <div class="col-1" >
+              <input type="checkbox" [disabled]="quienve === 'cliente'" id="facturacioncheck" [(ngModel)]="facturacioncheck" (click)="habilitarFacturacion($event)" > 
+            </div>
+          </div>
+
+          <div class="row " >
+            <div class="col-1" style="width: 10px;">
+                <input class="form-control" [disabled]="timbresinput" type="number" min="1" style="width: 80px; height: 30px;" (click)="clickTimbresFunction()" [(ngModel)]="timbres" > 
+            </div>
+            <div class="col" style="margin-left: 65px;" >
+              <p style="margin-top: 3px; font-size: 18px;">Timbres</p>
+            </div>
+            <div class="col" *ngIf="clickTimbres === true">
+              <button type="button"  class="btn btn-success btn-xs m-1" (click)="aceptarBotonTimbres()"><i class="feather icon-save" ></i></button>              
+            </div>
+            <div class="col" *ngIf="clickTimbres === true" style="right: 39px;" >
+              <button  type="button"  class="btn btn-danger btn-xs m-1" (click)="cancelarBotonTimbres()"><i class="feather icon-x" ></i></button>
+            </div>
+            
+          </div>
+
+
+          <div class="row" style="margin-top: 5px;"> <!--AGREGADO NOMINAS A EL PERFIL DEL CLIENTE-->
+            <div class="col-1">
+              <i class="feather icon-info" style="width: 14px; height: 14px;" placement="top" ngbTooltip="Activa aquí el módulo de nóminas a los clientes que han realizado el pago correspondiente al número de nóminas contratadas"></i>
+            </div>
+            <div class="col-5" >
+              <p class="tx-11 font-weight-bold mb-0 text-uppercase">NÓMINAS</p> 
+            </div>
+            <div class="col-1" >
+              <input type="checkbox" [disabled]="quienve === 'cliente'" [(ngModel)]="nominascheck"  (click)="habilitarCampoNomina($event)"> 
+            </div>
+          </div>
+
+          <div class="row ">
+            <div class="col-1" style="width: 10px;">
+                <input class="form-control" [disabled]="nominasinput" type="number" min="1" style="width: 80px; height: 30px;" [(ngModel)]="nominas" (click)="clickNominasFunction()"> 
+            </div>
+            <div class="col" style="margin-left: 65px;">
+              <p style=" margin-top: 3px; font-size: 18px;">Nóminas</p>
+            </div>
+            <div class="col" *ngIf="clickNominas === true ">
+              <button type="button"  class="btn btn-success btn-xs m-1" (click)="aceptarBotonNominasInput()"><i class="feather icon-save" ></i></button>              
+            </div>
+            <div class="col" *ngIf="clickNominas === true" style="right: 39px;" >
+              <button  type="button"  class="btn btn-danger btn-xs m-1" (click)="cancelarBotonNominasInput()"><i class="feather icon-x" ></i></button>
+            </div>
+          </div>
+        </div>
+              
+            
+            
+            
+            
+          
+          <div class="mt-3" *ngIf="LowRols">              
+            <button (click)="CambiarContrasenia(changePassword)" type="button" class="btn btn-primary btn-xs m-1">Cambiar Contraseña</button>
+          </div>
+          <div class="mt-3" *ngIf="vinodepaypal && tipo === 'cliente'">              
+            <button (click)="CancelarSuscripcion(cancelSus)" type="button" class="btn btn-primary btn-xs m-1">Cancelar Suscripción</button>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <!-- left wrapper end -->
+    <!-- middle wrapper start -->
+    <div class="col-md-8 col-xl-8 middle-wrapper">
+      <div class="row">
+        <div class="col-md-12 stretch-card" *blockUI="'perfildiv'">
+          <div class="card">
+            <div class="card-body">
+              <div class=" d-md-block" style="text-align: right;">
+                <button type="button" *ngIf="isOn" class="btn btn-primary submit" (click)="GuardarP()">Guardar</button>
+                <button type="button" *ngIf="isOn" class="btn btn-light submit" (click)="CancelarP()">Cancelar</button>
+                <button *ngIf="!isOn" class="btn btn-primary btn-icon-text btn-edit-profile" (click)="Editar()">
+                  <i data-feather="edit" appFeatherIcon class="btn-icon-prepend"></i> Editar perfil
+                </button>
+              </div>
+              <h6 class="card-title"></h6>
+                <form>
+                  <div class="row" *ngIf="!hideifcontador">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label class="control-label">Razón social o nombre comercial</label>
+                        <input type="text" [readonly]="rOnly" class="form-control" [(ngModel)]="razonsocial" [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label class="control-label">Nombres</label>
+                        <input type="text" [readonly]="rOnly" class="form-control" [(ngModel)]="nombres" [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label class="control-label">Apellidos</label>
+                        <input type="text" [readonly]="rOnly" class="form-control" [(ngModel)]="apellidos" [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                  </div><!-- Row -->
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label class="control-label">Correo de contacto</label>
+                        <input type="text" class="form-control" readonly [(ngModel)]="correo" [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label class="control-label">Teléfono</label>
+                        <input type="text" mask="(000) 000 00 00"  maxlength="15" [readonly]="rOnly" class="form-control" [(ngModel)]="telefono" [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                  </div>  
+                  <div class="row" *ngIf="!hideifcontador">
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label class="control-label">RFC</label>
+                        <input type="text" [readonly]="rOnly" class="form-control" [(ngModel)]="rfc" [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div><!-- Col -->
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label class="control-label">CURP</label>
+                        <input type="text" [readonly]="rOnly" class="form-control" [(ngModel)]="curp" [ngModelOptions]="{standalone: true}" >
+                      </div>
+                    </div><!-- Col -->
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label class="control-label">CODIGO POSTAL</label>
+                        <input type="text" [readonly]="rOnly" class="form-control" [(ngModel)]="codigopostalperfil" [ngModelOptions]="{standalone: true} " maxlength="5">
+                      </div>
+                    </div><!-- Col -->
+                  </div><!-- Row -->   
+                  <div class="row" *ngIf="!hideifcontador">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label class="control-label">Regimen Fiscal</label>
+                        <select [disabled]="rOnly" class="form-control" [(ngModel)]="regimen" style="color: black;" [ngModelOptions]="{standalone: true}">
+                          <option value="612">Persona física con actividad empresarial o profesional</option>
+                          <option value="621">Régimen de incorporación fiscal</option>
+                          <option value="625">Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas</option>
+                          <option value="606">Arrendamiento</option>
+                          <option value="601">Persona Moral</option>
+                          <!-- 
+                          <option value="601 - General de Ley Personas Morales">601 - General de Ley Personas Morales</option>
+                          <option value="603 - Personas Morales con Fines no Lucrativos">603 - Personas Morales con Fines no Lucrativos</option>
+                          <option value="605 - Sueldos y Salarios e Ingresos Asimilados a Salarios">605 - Sueldos y Salarios e Ingresos Asimilados a Salarios</option>
+                          <option value="606 - Arrendamiento">606 - Arrendamiento</option>
+                          <option value="607 - Régimen de Enajenación o Adquisición de Bienes">607 - Régimen de Enajenación o Adquisición de Bienes</option>
+                          <option value="608 - Demás ingresos">608 - Demás ingresos</option>
+                          <option value="609 - Consolidación">609 - Consolidación</option>
+                          <option value="610 - Residentes en el Extranjero sin Establecimiento Permanente en México">610 - Residentes en el Extranjero sin Establecimiento Permanente en México</option>
+                          <option value="611 - Ingresos por Dividendos (socios y accionistas)">611 - Ingresos por Dividendos (socios y accionistas)</option>
+                          <option value="612 - Personas Físicas con Actividades Empresariales y Profesionales">612 - Personas Físicas con Actividades Empresariales y Profesionales</option>
+                          <option value="614 - Ingresos por intereses">614 - Ingresos por intereses</option>
+                          <option value="615 - Régimen de los ingresos por obtención de premios">615 - Régimen de los ingresos por obtención de premios</option>
+                          <option value="616 - Sin obligaciones fiscales">616 - Sin obligaciones fiscales</option>
+                          <option value="620 - Sociedades Cooperativas de Producción que optan por diferir sus ingresos">620 - Sociedades Cooperativas de Producción que optan por diferir sus ingresos</option>
+                          <option value="621 - Incorporación Fiscal">621 - Incorporación Fiscal</option>
+                          <option value="622 - Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras">622 - Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras</option>
+                          <option value="623 - Opcional para Grupos de Sociedades">623 - Opcional para Grupos de Sociedades</option>
+                          <option value="624 - Coordinados">624 - Coordinados</option>
+                          <option value="625 - Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas">625 - Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas</option>
+                          <option value="628 - Hidrocarburos">628 - Hidrocarburos</option>
+                          <option value="629 - De los Regímenes Fiscales Preferentes y de las Empresas Multinacionales">629 - De los Regímenes Fiscales Preferentes y de las Empresas Multinacionales</option>
+                          <option value="630 - Enajenación de acciones en bolsa de valores">630 - Enajenación de acciones en bolsa de valores</option>  -->
+                        </select>
+                      </div>
+                    </div><!-- Col -->                      
+                  </div><!-- Row -->     
+                  <div class="row" *ngIf="!hideifcontador">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label class="control-label">Breve descripción de la empresa</label>
+                        <textarea [disabled]="rOnly" rows="5" class="form-control" [(ngModel)]="descripcion" [ngModelOptions]="{standalone: true}">
+                          
+                        </textarea>
+                      </div>
+                    </div><!-- Col -->                      
+                  </div><!-- Row -->
+                  
+                </form>
+                <hr>
+                <div class="row" *ngIf="!hideifcontador">
+                  <div class="col-sm-12">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label class="control-label">Logo</label>
+                          <input (change)="handleFileInputFC($event)" accept="image/jpeg,image/png" type="file" name="imgFC" class="file-upload-default" id="fileUploadInputExampleFC" placeholder="Subir logo" >
+                          <div class="input-group col-xs-4" (click)="openFileBrowserFC($event)">
+                            <input ngbTooltip="Sube imágenes no mayores a 400x400 pixeles" [(ngModel)]="logoname" [ngModelOptions]="{standalone: true}" type="text" class="form-control file-upload-info" style="height: 40px;" disabled="" placeholder="Da click aquí para subir tu logo">
+                          </div>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <label class="form-check-label">
+                            <input type="checkbox" [disabled]="rOnly" class="form-check-input" [(ngModel)]="cuadrado" [ngModelOptions]="{standalone: true}">
+                            <i class="input-frame"></i>
+                            ¿Logo cuadrado? 
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="input-group justify-content-between align-items-center" *ngIf="hidelogo">
+                          <img id="logoimage" width="150" height="150" style="cursor: pointer;" src="{{imglogo}}" alt="logo" >
+                        </div>
+                      </div>
+                    </div>
+                  </div><!-- Col -->
+                </div><!-- Row -->
+                
+              <!--<button type="button" *ngIf="isOn" class="btn btn-primary submit" (click)="GuardarP()">Guardar</button>
+              <button type="button" *ngIf="isOn" class="btn btn-light submit" (click)="CancelarP()">Cancelar</button>-->
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>      
+  </div>    
+</div>
+<ng-template #changePassword let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Cambiar contraseña</h5>
+    <button type="button" class="close" (click)="modal.close('by: close icon')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *blockUI="'contramodal'">
+    <div class="row">
+      <div class="col-md-12 stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <form>
+              <div class="row" >
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label class="control-label">Contraseña nueva:</label>
+                    <input type="text" class="form-control" [(ngModel)]="password"  [ngModelOptions]="{standalone: true}" placeholder="Escribir contraseña"   >
+                    <div *ngIf="userform.password.errors?.minLength">
+                      <p> A2222</p>  
+                    </div>
+                    
+                  </div>
+                </div><!-- Col -->
+              </div>
+              <div class="row" >
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label class="control-label">Confirmar contraseña:</label>
+                    <input type="password" class="form-control" [(ngModel)]="cpassward" [ngModelOptions]="{standalone: true}" placeholder="Confirmar contraseña">
+                  </div>
+                </div><!-- Col -->
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="Cambiar()">Cambiar</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.close('by: close button')">Cancelar</button>    
+  </div>
+</ng-template>
+
+<ng-template #cancelSus let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Cancelar suscripción</h5>
+    <button type="button" class="close" (click)="modal.close('by: close icon')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *blockUI="'susModal'">
+    <div class="row">
+      <div class="col-md-12 stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <form>
+              <div class="row" >
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label class="control-label">Motivo o razón:</label>
+                    <textarea class="form-control" [(ngModel)]="motivo" [ngModelOptions]="{standalone: true}" placeholder="Motivo o razón por la cual estás cancelando tu suscripción"></textarea>
+                  </div>
+                </div><!-- Col -->
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="CancelarSus()">Cancelar Suscripción</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.close('by: close button')">Cancelar</button>    
+  </div>
+</ng-template>
